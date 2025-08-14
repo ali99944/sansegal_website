@@ -1,16 +1,10 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import { Navbar } from '@/components/layout/navbar'
+import { Footer } from '@/components/layout/footer'
+import { BackgroundAudioPlayer } from "@/components/layout/background_audio_player";
+import AppProvider from "@/src/providers/app-provider";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -25,9 +19,34 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`antialiased`}
       >
-        {children}
+        <AppProvider>
+        <Navbar />
+        <main className="bg-neutral-light">
+          {children}
+        </main>
+        <Footer />
+        <BackgroundAudioPlayer
+          tracks={[
+            {
+              id: '1',
+              src: '/assets/music/sound1.mp3',
+              title: ''
+            },
+            {
+              id: '2',
+              src: '/assets/music/sound2.mp3',
+              title: ''
+            },
+            {
+              id: '1',
+              src: '/assets/music/sound3.mp3',
+              title: ''
+            },
+          ]}
+        />
+        </AppProvider>
       </body>
     </html>
   );
