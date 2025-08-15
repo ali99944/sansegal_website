@@ -4,65 +4,15 @@ import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Minus, Plus, Trash2, ShoppingBag, ArrowLeft, Gift } from "lucide-react"
+import { Minus, Plus, Trash2, ShoppingBag, Gift } from "lucide-react"
 import Link from "next/link"
+import { useCart } from "@/src/hooks/use-cart"
 
-interface CartItem {
-  id: string
-  name: string
-  image: string
-  price: number
-  originalPrice?: number
-  quantity: number
-  color?: string
-  size?: string
-}
-
-const initialCartItems: CartItem[] = [
-  {
-    id: "1",
-    name: "Classic Tote Bag",
-    image: "/assets/images/products/p1.png",
-    price: 299,
-    originalPrice: 399,
-    quantity: 1,
-    color: "Brown",
-    size: "Large",
-  },
-  {
-    id: "2",
-    name: "Leather Wallet",
-    image: "/assets/images/products/p11.jpg",
-    price: 149,
-    quantity: 2,
-    color: "Black",
-  },
-  {
-    id: "3",
-    name: "Executive Briefcase",
-    image: "/assets/images/products/p2.png",
-    price: 549,
-    quantity: 1,
-    color: "Cognac",
-  },
-]
 
 export default function CartPage() {
-  const [cartItems, setCartItems] = useState<CartItem[]>(initialCartItems)
   const [promoCode, setPromoCode] = useState("")
   const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number } | null>(null)
-
-  const updateQuantity = (id: string, newQuantity: number) => {
-    if (newQuantity === 0) {
-      removeItem(id)
-      return
-    }
-    setCartItems(cartItems.map((item) => (item.id === id ? { ...item, quantity: newQuantity } : item)))
-  }
-
-  const removeItem = (id: string) => {
-    setCartItems(cartItems.filter((item) => item.id !== id))
-  }
+  const { items: cartItems, removeItem, clearCart, updateQuantity } = useCart()  
 
   const applyPromoCode = () => {
     // Mock promo code logic
@@ -75,19 +25,17 @@ export default function CartPage() {
     }
   }
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
-  const savings = cartItems.reduce(
-    (sum, item) => sum + (item.originalPrice ? (item.originalPrice - item.price) * item.quantity : 0),
-    0,
-  )
+  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+
   const promoDiscount = appliedPromo ? subtotal * appliedPromo.discount : 0
   const shipping = subtotal > 200 ? 0 : 15
-  const tax = (subtotal - promoDiscount) * 0.08
+  // const tax = (subtotal - promoDiscount) * 0.08
+  const tax = 0
   const total = subtotal - promoDiscount + shipping + tax
 
   if (cartItems.length === 0) {
     return (
-      <div className="bg-neutral-light min-h-screen">
+      <div className="bg-neutral-light min-h-screen flex justify-center pt-20">
         <section className="section-padding">
           <div className="container-luxury max-w-2xl text-center">
             <div className="bg-white rounded-lg  p-12">
@@ -97,10 +45,12 @@ export default function CartPage() {
                 Looks like you haven&apos;t added any items to your cart yet. Discover our beautiful collection of
                 handcrafted leather goods.
               </p>
-              <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
-                <ArrowLeft className="h-5 w-5 mr-2" />
-                Continue Shopping
-              </Button>
+              <Link href={'/'}>
+                <Button size="lg" className="bg-primary hover:bg-primary/90 text-white">
+                  <ShoppingBag className="h-5 w-5 mr-2" />
+                  Continue Shopping
+                </Button>
+              </Link>
             </div>
           </div>
         </section>
@@ -109,7 +59,7 @@ export default function CartPage() {
   }
 
   return (
-    <div className="bg-neutral-light min-h-screen ">
+    <div className="bg-neutral-light min-h-screen p-6">
       {/* Header */}
       <section className="max-w-7xl mx-auto">
         <div className="container-luxury py-8">
@@ -124,8 +74,16 @@ export default function CartPage() {
             {/* Cart Items */}
             <div className="lg:col-span-2">
               <div className="bg-white rounded-lg  overflow-hidden">
-                <div className="p-6 border-b border-neutral-mid/20">
-                  <h2 className="font-serif text-xl font-semibold text-primary">Items in Your Cart</h2>
+                <div className="p-4 border-b border-neutral-mid/20">
+                  <div className="flex justify-between items-center">
+                    <h2 className="font-serif text-xl font-semibold text-primary">Items in Your Cart</h2>
+                    <button
+                      onClick={async () => await clearCart()}
+                      className="p-2 text-destructive cursor-pointer hover:bg-red-50 rounded transition-colors"
+                    >
+                      <Trash2 className="h-4 w-4" />
+                    </button>
+                  </div>
                 </div>
 
                 <div className="divide-y divide-neutral-mid/20">
@@ -135,8 +93,8 @@ export default function CartPage() {
                         {/* Product Image */}
                         <div className="flex-shrink-0 w-24 h-24 bg-neutral-light rounded-lg overflow-hidden">
                           <Image
-                            src={item.image || "/placeholder.svg"}
-                            alt={item.name}
+                            src={item.product.image || "/placeholder.svg"}
+                            alt={item.product?.name?.en}
                             width={96}
                             height={96}
                             className="w-full h-full object-contain"
@@ -145,16 +103,16 @@ export default function CartPage() {
 
                         {/* Product Details */}
                         <div className="flex-1 min-w-0">
-                          <h3 className="font-semibold text-primary mb-1">{item.name}</h3>
-                          <div className="text-sm text-neutral-mid space-y-1">
+                          <h3 className="font-semibold text-primary mb-1">{item.product?.name?.en}</h3>
+                          {/* <div className="text-sm text-neutral-mid space-y-1">
                             {item.color && <p>Color: {item.color}</p>}
                             {item.size && <p>Size: {item.size}</p>}
-                          </div>
+                          </div> */}
 
                           <div className="flex items-center mt-3">
-                            <span className="text-lg font-bold text-primary">${item.price}</span>
-                            {item.originalPrice && (
-                              <span className="text-sm text-neutral-mid line-through ml-2">${item.originalPrice}</span>
+                            <span className="text-lg font-bold text-primary">${item.product.price}</span>
+                            {item.product.price && (
+                              <span className="text-sm text-neutral-mid line-through ml-2">${item.product.price}</span>
                             )}
                           </div>
                         </div>
@@ -225,12 +183,6 @@ export default function CartPage() {
                     <span className="font-medium">${subtotal.toFixed(2)}</span>
                   </div>
 
-                  {savings > 0 && (
-                    <div className="flex justify-between text-green-600">
-                      <span>You Save</span>
-                      <span>-${savings.toFixed(2)}</span>
-                    </div>
-                  )}
 
                   {appliedPromo && (
                     <div className="flex justify-between text-green-600">

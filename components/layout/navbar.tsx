@@ -1,10 +1,11 @@
 "use client"
 
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, Search, ShoppingBag, User, Sun, Moon, Globe } from 'lucide-react'
+import { Menu, X, ShoppingBag, Globe } from 'lucide-react'
 import { PromotionalBanner } from './promotional_banner'
 import { Button } from '../ui/button'
+import { useCart } from '@/src/hooks/use-cart'
 
 const navigationItems = [
   { name: 'About', href: '/about' },
@@ -13,22 +14,10 @@ const navigationItems = [
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [isDarkMode, setIsDarkMode] = useState(false)
   const [language, setLanguage] = useState('en') // 'en' for English, 'ar' for Arabic
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
+  const { items } = useCart()
 
-  // Apply dark mode class to document when isDarkMode changes
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add('dark')
-    } else {
-      document.documentElement.classList.remove('dark')
-    }
-  }, [isDarkMode])
-
-  const toggleDarkMode = () => {
-    setIsDarkMode(!isDarkMode)
-  }
 
   const toggleLanguage = (lang: string) => {
     setLanguage(lang)
@@ -98,7 +87,7 @@ export function Navbar() {
 
                 {/* Language Dropdown */}
                 {isLanguageMenuOpen && (
-                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-lg z-50">
+                  <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-sm z-50">
                     <div className="py-1">
                       <button
                         className={`${language === 'en' ? 'bg-neutral-light/50' : ''} cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-primary hover:bg-neutral-light`}
@@ -117,25 +106,13 @@ export function Navbar() {
                 )}
               </div>
 
-              {/* Dark/Light Mode Toggle */}
-              <div 
-                className="text-white hover:bg-neutral-mid/10 p-2 cursor-pointer rounded-full"
-                onClick={toggleDarkMode}
-              >
-                {isDarkMode ? 
-                  <Sun className="h-5 w-5" /> : 
-                  <Moon className="h-5 w-5" />
-                }
-                <span className="sr-only">{isDarkMode ? 'Light mode' : 'Dark mode'}</span>
-              </div>
-
               <Link href={'/cart'}>
               <div className="p-2 cursor-pointer rounded-full text-white hover:bg-neutral-mid/10 relative">
                 <ShoppingBag className="h-5 w-5" />
                 <span className="sr-only">Shopping bag</span>
                 {/* Cart count badge */}
                 <span className="absolute -top-1 -right-1 bg-accent text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-medium">
-                  2
+                  {items.length}
                 </span>
               </div>
               </Link>

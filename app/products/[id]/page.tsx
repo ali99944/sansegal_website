@@ -5,105 +5,22 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ShoppingBag, Minus, Plus, Share2 } from "lucide-react"
 import { ProductCard } from "@/components/features/home/feautred_products"
+import { useProduct } from "@/src/hooks/use-products"
+import { useParams } from "next/navigation"
+import { Product } from "@/src/types/product"
 
-interface Product {
-  id: string
-  name: string
-  nameAr: string
-  price: number
-  originalPrice?: number
-  images: string[]
-  description: string
-  specifications: { [key: string]: string }
-  colors: { name: string; value: string }[]
-  isNew?: boolean
-  isSale?: boolean
-  inStock: boolean
-}
 
-// Mock product data (in real app, this would be fetched based on the ID)
-const mockProduct: Product = {
-  id: "1",
-  name: "Classic Tote Bag",
-  nameAr: "حقيبة توت كلاسيكية",
-  price: 299,
-  originalPrice: 399,
-  images: [
-    "/assets/images/products/p1.png",
-    "/assets/images/products/p2.png",
-    "/assets/images/products/p3.png",
-    "/assets/images/products/p4.png",
-  ],
-  description:
-    "Crafted from premium full-grain leather, this classic tote bag embodies timeless elegance and functionality. Each piece is meticulously handcrafted by skilled artisans in Egypt, ensuring exceptional quality and attention to detail. The spacious interior and durable construction make it perfect for both professional and casual use.",
-  specifications: {
-    Material: "Full-grain Egyptian leather",
-    Dimensions: "40cm x 30cm x 15cm",
-    Weight: "1.2kg",
-    "Handle Drop": "25cm",
-    Closure: "Zip top closure",
-    Interior: "Fabric lining with pockets",
-    Hardware: "Antique brass",
-    Care: "Clean with leather conditioner",
-  },
-  colors: [
-    { name: "Cognac", value: "#B08D57" },
-    { name: "Black", value: "#1A1A1A" },
-    { name: "Brown", value: "#8B4513" },
-    { name: "Tan", value: "#D2B48C" },
-  ],
-  isNew: true,
-  isSale: true,
-  inStock: true,
-}
-
-const relatedProducts = [
-  {
-    id: "2",
-    name: "Executive Briefcase",
-    nameAr: "حقيبة تنفيذية",
-    price: 549,
-    image: "/assets/images/products/p2.png",
-    isNew: false,
-  },
-  {
-    id: "3",
-    name: "Evening Clutch",
-    nameAr: "حقيبة يد مسائية",
-    price: 199,
-    originalPrice: 249,
-    image: "/assets/images/products/p3.png",
-    isSale: true,
-  },
-  {
-    id: "4",
-    name: "Crossbody Messenger",
-    nameAr: "حقيبة كتف",
-    price: 349,
-    image: "/assets/images/products/p4.png",
-    isNew: true,
-  },
-  {
-    id: "5",
-    name: "Travel Duffle",
-    nameAr: "حقيبة سفر",
-    price: 699,
-    image: "/assets/images/products/p5.png",
-  },
-]
+const relatedProducts: Product[] = []
 
 export default function ProductDetailPage() {
   const [selectedImage, setSelectedImage] = useState(0)
-  const [selectedColor, setSelectedColor] = useState(mockProduct.colors[0])
+  // const [selectedColor, setSelectedColor] = useState()
   const [quantity, setQuantity] = useState(1)
+  const { id } = useParams()
+  const { data: product, isFetching: is_product_loading } = useProduct(+!id)
 
   const handleAddToCart = () => {
-    // Add to cart logic
-    console.log("Added to cart:", {
-      product: mockProduct,
-      color: selectedColor,
-      quantity,
-    })
+
   }
 
   return (
@@ -117,8 +34,9 @@ export default function ProductDetailPage() {
               {/* Main Image */}
               <div className="aspect-square bg-neutral-light rounded-lg overflow-hidden">
                 <Image
-                  src={mockProduct.images[selectedImage] || "/placeholder.svg"}
-                  alt={mockProduct.name}
+                  // src={product?.images[selectedImage] || "/placeholder.svg"}
+                  src={''}
+                  alt={product?.name.en ?? ''}
                   width={600}
                   height={600}
                   className="w-full h-full object-contain"
@@ -126,8 +44,8 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Thumbnail Images */}
-              <div className="grid grid-cols-4 gap-3">
-                {mockProduct.images.map((image, index) => (
+              {/* <div className="grid grid-cols-4 gap-3">
+                {product?.images.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
@@ -137,52 +55,43 @@ export default function ProductDetailPage() {
                   >
                     <Image
                       src={image || "/placeholder.svg"}
-                      alt={`${mockProduct.name} view ${index + 1}`}
+                      alt={`${product?.name} view ${index + 1}`}
                       width={150}
                       height={150}
                       className="w-full h-full object-contain"
                     />
                   </button>
                 ))}
-              </div>
+              </div> */}
             </div>
 
             {/* Product Information */}
             <div className="space-y-6">
               {/* Badges */}
-              <div className="flex gap-2">
-                {mockProduct.isNew && (
+              {/* <div className="flex gap-2">
+                {product?.isNew && (
                   <span className="bg-highlight text-primary text-sm font-semibold px-3 py-1 rounded">New</span>
                 )}
-                {mockProduct.isSale && (
+                {product?.isSale && (
                   <span className="bg-red-600 text-white text-sm font-semibold px-3 py-1 rounded">Sale</span>
                 )}
-              </div>
+              </div> */}
 
               <div>
                 <h1 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-2 tracking-tight">
-                  {mockProduct.name}
+                  {product?.name.en}
                 </h1>
               </div>
 
               {/* Price */}
               <div className="flex items-center gap-4">
-                <span className="text-3xl font-bold text-primary">${mockProduct.price}</span>
-                {mockProduct.originalPrice && (
-                  <>
-                    <span className="text-xl text-neutral-mid line-through">${mockProduct.originalPrice}</span>
-                    <span className="bg-red-600 text-white text-sm font-semibold px-2 py-1 rounded">
-                      -{Math.round(((mockProduct.originalPrice - mockProduct.price) / mockProduct.originalPrice) * 100)}
-                      % OFF
-                    </span>
-                  </>
-                )}
+                <span className="text-3xl font-bold text-primary">${product?.price}</span>
               </div>
 
               <div>
-                <h3 className="font-semibold text-primary mb-3">Color: {selectedColor.name}</h3>
-                <div className="flex gap-3">
-                  {mockProduct.colors.map((color) => (
+                {/* <h3 className="font-semibold text-primary mb-3">Color: {selectedColor.name}</h3> */}
+                {/* <div className="flex gap-3">
+                  {product?.colors.map((color) => (
                     <button
                       key={color.name}
                       onClick={() => setSelectedColor(color)}
@@ -199,7 +108,7 @@ export default function ProductDetailPage() {
                       )}
                     </button>
                   ))}
-                </div>
+                </div> */}
               </div>
 
               <div>
@@ -220,7 +129,6 @@ export default function ProductDetailPage() {
                       <Plus className="h-4 w-4" />
                     </button>
                   </div>
-                  <span className="text-sm text-neutral-mid">{mockProduct.inStock ? "In Stock" : "Out of Stock"}</span>
                 </div>
               </div>
 
@@ -229,10 +137,9 @@ export default function ProductDetailPage() {
                   size="lg"
                   className="flex-1 bg-primary hover:bg-primary/90 text-white"
                   onClick={handleAddToCart}
-                  disabled={!mockProduct.inStock}
                 >
                   <ShoppingBag className="h-5 w-5 mr-2" />
-                  Add to Cart - ${(mockProduct.price * quantity).toFixed(2)}
+                  Add to Cart - ${((product?.price ?? 0) * quantity).toFixed(2)}
                 </Button>
                 <Button size="lg" variant="outline" className="px-4 bg-transparent">
                   <Share2 className="h-5 w-5" />
@@ -243,14 +150,14 @@ export default function ProductDetailPage() {
                 {/* Description */}
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-primary mb-4">Description</h3>
-                  <p className="text-neutral-mid text-lg leading-relaxed">{mockProduct.description}</p>
+                  <p className="text-neutral-mid text-lg leading-relaxed">{product?.description.en}</p>
                 </div>
 
                 {/* Specifications */}
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-primary mb-4">Specifications</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries(mockProduct.specifications).map(([key, value]) => (
+                    {Object.entries([]).map(([key, value]) => (
                       <div key={key} className="flex justify-between py-2 border-b border-neutral-mid/10">
                         <span className="font-medium text-primary">{key}</span>
                         <span className="text-neutral-mid">{value}</span>

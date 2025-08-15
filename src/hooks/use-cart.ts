@@ -19,10 +19,10 @@ export const useCart = () => {
 
   // Initialize cart on first load
   useEffect(() => {
-    if (!initialized) {
-      dispatch(fetchCart())
-    }
-  }, [dispatch, initialized])
+    dispatch(fetchCart())
+    // if (!initialized) {
+    // }
+  }, [dispatch])
 
   // Generate guest token if needed
   useEffect(() => {
@@ -43,7 +43,7 @@ export const useCart = () => {
     try {
       const result = await dispatch(addToCart({ product_id: productId, quantity }))
       if (addToCart.fulfilled.match(result)) {
-        addNotification('تم إضافة المنتج إلى السلة بنجاح', 'success')
+        addNotification("products was successfully added to cart", 'success')
         return result.payload
       }
     } catch (error) {

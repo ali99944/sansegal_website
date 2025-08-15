@@ -9,30 +9,41 @@ import { Textarea } from "@/components/ui/textarea"
 import Dialog from "@/components/ui/dialog"
 import { MapPin, Phone, Mail, Clock, Send, Check, Facebook, Instagram, Twitter, Linkedin } from "lucide-react"
 import { Card } from "@/components/ui/card"
+import { useContactForm } from "@/src/hooks/use-contact-form"
+import { useNotifications } from "@/src/hooks/use-notification"
+import { getApiError } from "@/lib/error_handler"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
-    name: "",
+    full_name: "",
     email: "",
     subject: "",
     message: "",
   })
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [showSuccessDialog, setShowSuccessDialog] = useState(false)
+  const contactFormAction = useContactForm()
+  const { notify } = useNotifications()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
 
-    // Simulate form submission
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await contactFormAction.mutateAsync(formData, {
+      onSuccess() {
+        setFormData({ full_name: "", email: "", subject: "", message: "" })
+        setIsSubmitting(false)
+        setShowSuccessDialog(true)
+      },
 
-    // Reset form
-    setFormData({ name: "", email: "", subject: "", message: "" })
-    setIsSubmitting(false)
-
-    // Show success dialog instead of alert
-    setShowSuccessDialog(true)
+      onError(error) {
+        console.log(error);
+        notify.error(
+          getApiError(error).message
+        )
+        setIsSubmitting(false)
+      },
+    })
   }
 
   const closeSuccessDialog = () => {
@@ -70,15 +81,15 @@ export default function ContactPage() {
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-primary mb-2">
+                    <label htmlFor="full_name" className="block text-sm font-medium text-primary mb-2">
                       Full Name *
                     </label>
                     <Input
-                      id="name"
-                      name="name"
+                      id="full_name"
+                      name="full_name"
                       type="text"
                       required
-                      value={formData.name}
+                      value={formData.full_name}
                       onChange={handleChange}
                       className="w-full"
                       placeholder="Your full name"
@@ -284,7 +295,7 @@ export default function ContactPage() {
 
       {/* Success Dialog */}
       <Dialog isOpen={showSuccessDialog} onClose={closeSuccessDialog} size="sm">
-        <div className="text-center py-6 px-4">
+        <div className="text-center py-4 px-4">
           <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-100 mb-4">
             <Check className="h-8 w-8 text-green-600" />
           </div>
@@ -294,6 +305,7 @@ export default function ContactPage() {
           </p>
           <Button 
             onClick={closeSuccessDialog} 
+            size={'md'}
             className="bg-primary hover:bg-primary/90 text-white px-6"
           >
             Close

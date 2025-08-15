@@ -1,25 +1,16 @@
 import { createSlice, createAsyncThunk, PayloadAction } from '@reduxjs/toolkit'
 import { RootState } from '../store'
 import AppConstants from '@/src/constants/app_constants'
+import { Product } from '@/src/types/product'
 
-// Types
-export interface CartProduct {
-  id: number
-  name: string
-  image: string | null
-  sell_price: number
-  stock: number
-  is_public: boolean
-  status: string
-}
+
 
 export interface CartItem {
   id: number
   product_id: number
   quantity: number
-  customer_id: number | null
   guest_cart_token: string | null
-  product: CartProduct
+  product: Product
   created_at: string
   updated_at: string
 }

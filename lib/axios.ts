@@ -9,7 +9,7 @@ export const useAxios = (
 ) => {
   const { guest_cart_token } = useAppSelector(state => state.cart)
 
-  return axios.create({
+  const axios_client = axios.create({
     baseURL: AppConstants.api_url,
     headers: {
       "Content-Type": contentType as string,
@@ -18,5 +18,14 @@ export const useAxios = (
       'X-Cart-Token': guest_cart_token,
       "Access-Control-Allow-Origin": "*",
     },
-  });
+  })
+
+  axios_client.interceptors.request.use(request => {
+    console.log(request.headers);
+
+    return request;
+    
+  })
+
+  return axios_client;
 };

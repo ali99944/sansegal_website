@@ -30,13 +30,6 @@ const values = [
   },
 ]
 
-const milestones = [
-  { year: "2010", title: "Founded", description: "Sansegal was born from a passion for timeless leather craftsmanship" },
-  { year: "2015", title: "International Expansion", description: "Opened our first international boutique in Paris" },
-  { year: "2018", title: "Sustainability Initiative", description: "Launched our eco-friendly leather sourcing program" },
-  { year: "2020", title: "Digital Innovation", description: "Embraced e-commerce while maintaining artisan quality" },
-  { year: "2024", title: "Global Recognition", description: "Awarded 'Best Luxury Leather Brand' by Fashion Institute" },
-]
 
 export default function AboutPage() {
   return (

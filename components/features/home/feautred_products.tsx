@@ -4,190 +4,53 @@ import Image from "next/image"
 import { Plus, ShoppingBag } from "lucide-react"
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import { useProducts } from "@/src/hooks/use-products"
+import { Product } from "@/src/types/product"
+import { useCart } from "@/src/hooks/use-cart"
 
-interface Product {
-  id: string
-  name: string
-  nameAr: string
-  price: number
-  originalPrice?: number
-  image: string
-  isNew?: boolean
-  isSale?: boolean
+
+const calculateDiscountAmount = (product: Product) => {
+  if(!product.discount) return null
+  if(product.discount_type == 'fixed') {
+    return `-${+product.discount} LE`
+  }
+
+  return `-${product.discount}%`
 }
-
-const products: Product[] = [
-  {
-    id: "1",
-    name: "Classic Tote Bag",
-    nameAr: "حقيبة توت كلاسيكية",
-    price: 299,
-    originalPrice: 399,
-    image: "/assets/images/products/p1.png",
-    isNew: true,
-    isSale: true,
-  },
-  {
-    id: "2",
-    name: "Executive Briefcase",
-    nameAr: "حقيبة تنفيذية",
-    price: 549,
-    image: "/assets/images/products/p2.png",
-    isNew: false,
-  },
-  {
-    id: "3",
-    name: "Evening Clutch",
-    nameAr: "حقيبة يد مسائية",
-    price: 199,
-    originalPrice: 249,
-    image: "/assets/images/products/p3.png",
-    isSale: true,
-  },
-  {
-    id: "4",
-    name: "Crossbody Messenger",
-    nameAr: "حقيبة كتف",
-    price: 349,
-    image: "/assets/images/products/p4.png",
-    isNew: true,
-  },
-  {
-    id: "5",
-    name: "Travel Duffle",
-    nameAr: "حقيبة سفر",
-    price: 699,
-    image: "/assets/images/products/p5.png",
-  },
-  {
-    id: "6",
-    name: "Mini Backpack",
-    nameAr: "حقيبة ظهر صغيرة",
-    price: 279,
-    originalPrice: 329,
-    image: "/assets/images/products/p6.png",
-    isSale: true,
-  },
-  {
-    id: "7",
-    name: "Leather Satchel",
-    nameAr: "حقيبة جلدية كلاسيكية",
-    price: 429,
-    image: "/assets/images/products/p7.jpg",
-    isNew: true,
-  },
-  {
-    id: "8",
-    name: "Designer Handbag",
-    nameAr: "حقيبة يد مصممة",
-    price: 599,
-    originalPrice: 699,
-    image: "/assets/images/products/p8.jpg",
-    isSale: true,
-  },
-  {
-    id: "9",
-    name: "Business Portfolio",
-    nameAr: "محفظة أعمال",
-    price: 379,
-    image: "/assets/images/products/p9.jpg",
-  },
-  {
-    id: "10",
-    name: "Vintage Messenger",
-    nameAr: "حقيبة رسول عتيقة",
-    price: 459,
-    image: "/assets/images/products/p10.jpg",
-    isNew: true,
-  },
-  {
-    id: "11",
-    name: "Luxury Wallet",
-    nameAr: "محفظة فاخرة",
-    price: 149,
-    originalPrice: 199,
-    image: "/assets/images/products/p11.jpg",
-    isSale: true,
-  },
-  {
-    id: "12",
-    name: "Weekend Bag",
-    nameAr: "حقيبة نهاية الأسبوع",
-    price: 529,
-    image: "/assets/images/products/p12.jpg",
-  },
-  {
-    id: "13",
-    name: "Compact Purse",
-    nameAr: "محفظة صغيرة",
-    price: 189,
-    image: "/assets/images/products/p13.jpg",
-    isNew: true,
-  },
-  {
-    id: "14",
-    name: "Professional Briefcase",
-    nameAr: "حقيبة مهنية",
-    price: 649,
-    originalPrice: 749,
-    image: "/assets/images/products/p14.jpg",
-    isSale: true,
-  },
-  {
-    id: "15",
-    name: "Casual Daypack",
-    nameAr: "حقيبة يومية كاجوال",
-    price: 329,
-    image: "/assets/images/products/p15.jpg",
-  },
-  {
-    id: "16",
-    name: "Elegant Clutch",
-    nameAr: "حقيبة يد أنيقة",
-    price: 229,
-    image: "/assets/images/products/p16.jpg",
-    isNew: true,
-  },
-  {
-    id: "17",
-    name: "Premium Tote",
-    nameAr: "حقيبة توت فاخرة",
-    price: 399,
-    originalPrice: 479,
-    image: "/assets/images/products/p17.jpg",
-    isSale: true,
-  },
-]
 
 export function ProductCard({ product }: { product: Product }) {
   const [, setIsHovered] = useState(false)
   const router = useRouter()
+  const { addToCart } = useCart()
 
+  const handleAddToCart = async () => {
+    await addToCart(product.id, 1)
+  }
+  
   const navigateToProductPage = () => {
     router.push(`/products/${product.id}`)
   }
 
   return (
     <div
-      onClick={navigateToProductPage}
-      className="group relative bg-white shadow-none rounded-xl transition-all duration-300 overflow-hidden"
+      className="group relative bg-white shadow-sm rounded-xl transition-all duration-300 overflow-hidden"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
         {/* Badges */}
         <div className="bg-[#0d1321] flex items-center justify-between px-3 py-2">
         <div className="  flex items-center gap-2 ">
-          {product.isNew && (
+          {product.created_at && (
             <span className="bg-highlight text-primary text-xs font-semibold px-2 py-1 rounded text-center">New</span>
           )}
-          {product.isSale && (
+          {product.discount && (
             <span className="bg-red-600 text-white text-xs font-semibold px-2 py-1 rounded text-center">Discount</span>
           )}
         </div>
 
         {/* Wishlist Button */}
         <button
-          onClick={() => {}}
+          onClick={handleAddToCart}
           className={`flex py-1.5 px-2 cursor-pointer rounded-full transition-all duration-300 bg-white/80 text-primary hover:bg-white `}
         >
           <ShoppingBag className={`h-4 w-4`} />
@@ -198,7 +61,7 @@ export function ProductCard({ product }: { product: Product }) {
       <div className="relative aspect-[4/4] overflow-hidden">
         <Image
           src={product.image || "/placeholder.svg"}
-          alt={product.name}
+          alt={product.name.en}
           fill
           className="object-contain transition-transform duration-500"
         />
@@ -210,20 +73,20 @@ export function ProductCard({ product }: { product: Product }) {
 
       {/* Product Info */}
       <div className="p-3">
-        <h3 className="font-serif text-sm font-semibold text-primary mb-1 group-hover:text-accent transition-colors line-clamp-1">
-          {product.name}
+        <h3 onClick={navigateToProductPage} className="font-serif cursor-pointer hover:underline underline-offset-2 text-sm font-semibold text-primary mb-1 group-hover:text-accent transition-colors line-clamp-1">
+          {product.name.en}
         </h3>
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
             <span className="text-lg font-bold text-primary">${product.price}</span>
-            {product.originalPrice && (
-              <span className="text-xs text-neutral-mid line-through">${product.originalPrice}</span>
-            )}
+            {/* {product.price && (
+              <span className="text-xs text-neutral-mid line-through">${product.price}</span>
+            )} */}
           </div>
-          {product.isSale && product.originalPrice && (
+          {product.discount && (
             <span className="text-xs text-red-600 font-semibold">
-              -{Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100)}%
+              {calculateDiscountAmount(product)}
             </span>
           )}
         </div>
@@ -233,6 +96,43 @@ export function ProductCard({ product }: { product: Product }) {
 }
 
 export function AllProducts() {
+  const { data: products = [], isFetching: is_products_loading } = useProducts()
+
+  if (is_products_loading) {
+    return (
+      <section className="section-padding bg-neutral-light py-20">
+        <div className="container-luxury max-w-7xl mx-auto">
+          {/* Section Header Skeleton */}
+          <div className="w-full p-4 mb-4 bg-[#0d1321]/10 animate-pulse flex items-center justify-center h-16">
+            <div className="h-8 w-48 bg-gray-200 rounded"></div>
+          </div>
+
+          {/* Products Grid Skeleton */}
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-4 p-4">
+            {[...Array(10)].map((_, index) => (
+              <div key={index} className="bg-white rounded-xl shadow-sm overflow-hidden animate-pulse">
+                {/* Badge Area Skeleton */}
+                <div className="bg-gray-100 h-10 flex items-center justify-between px-3"></div>
+                
+                {/* Image Skeleton */}
+                <div className="relative aspect-[4/4] bg-gray-200"></div>
+                
+                {/* Content Skeleton */}
+                <div className="p-3">
+                  <div className="h-4 bg-gray-200 rounded w-3/4 mb-2"></div>
+                  <div className="flex items-center justify-between">
+                    <div className="h-6 bg-gray-200 rounded w-20"></div>
+                    <div className="h-4 bg-gray-200 rounded w-12"></div>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="section-padding bg-neutral-light py-20">
       <div className="container-luxury max-w-7xl mx-auto">

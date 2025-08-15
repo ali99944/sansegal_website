@@ -6,6 +6,7 @@ import { PersistGate } from "redux-persist/integration/react"
 import { store, persistor } from "../redux/store"
 import ReactQueryProvider from "./query-provider"
 import { Spinner } from "@/components/ui/spinner"
+import NotificationProvider from "./notification-provider"
 
 interface AppProviderProps {
     children: React.ReactNode
@@ -13,7 +14,8 @@ interface AppProviderProps {
 
 export default function AppProvider({ children }: AppProviderProps) {
     return (
-        <Provider store={store}>
+        <NotificationProvider>
+            <Provider store={store}>
             <PersistGate loading={<Spinner size="lg"/>} persistor={persistor}>
                 <ReactQueryProvider>
                     <div>
@@ -22,5 +24,6 @@ export default function AppProvider({ children }: AppProviderProps) {
                 </ReactQueryProvider>
             </PersistGate>
         </Provider>
+        </NotificationProvider>
     )
 }

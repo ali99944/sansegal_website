@@ -5,51 +5,10 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { CheckCircle, ShoppingBag, Mail, ArrowLeft, Copy, Check } from "lucide-react"
+import { CustomerInfo } from "@/src/types/checkout"
+import { useCart } from "@/src/hooks/use-cart"
+import { useCreateOrder } from "@/src/hooks/use-order"
 
-interface CartItem {
-  id: string
-  name: string
-  image: string
-  price: number
-  originalPrice?: number
-  quantity: number
-  color?: string
-  size?: string
-}
-
-interface CustomerInfo {
-  firstName: string
-  lastName: string
-  email: string
-  phone: string
-  secondaryPhone: string
-  address: string
-  secondaryAddress: string
-  city: string
-  specialMark: string
-}
-
-// Mock cart items (in real app, this would come from cart state/context)
-const cartItems: CartItem[] = [
-  {
-    id: "1",
-    name: "Classic Tote Bag",
-    image: "/assets/images/products/p1.png",
-    price: 299,
-    originalPrice: 399,
-    quantity: 1,
-    color: "Brown",
-    size: "Large",
-  },
-  {
-    id: "2",
-    name: "Leather Wallet",
-    image: "/assets/images/products/p11.jpg",
-    price: 149,
-    quantity: 2,
-    color: "Black",
-  },
-]
 
 export default function CheckoutPage() {
   const [customerInfo, setCustomerInfo] = useState<CustomerInfo>({
@@ -84,18 +43,20 @@ export default function CheckoutPage() {
   const [isLoading, setIsLoading] = useState(false)
   const [copiedOrderCode, setCopiedOrderCode] = useState(false)
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.price * item.quantity, 0)
+  const { items: cartItems } = useCart()  
+
+  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
   const shipping = subtotal > 200 ? 0 : 15
-  const tax = subtotal * 0.08
+  // const tax = subtotal * 0.08
+  const tax = 0
   const total = subtotal + shipping + tax
 
   const handleInputChange = (field: keyof CustomerInfo, value: string) => {
     setCustomerInfo((prev) => ({ ...prev, [field]: value }))
   }
 
-  const generateOrderCode = () => {
-    return `SG${Date.now().toString().slice(-6)}${Math.random().toString(36).substr(2, 3).toUpperCase()}`
-  }
+  const createOrderAction = useCreateOrder()
+
 
   const handleCompleteOrder = async () => {
     // Validate required fields
@@ -117,13 +78,30 @@ export default function CheckoutPage() {
 
     setIsLoading(true)
 
-    // Simulate API call
-    await new Promise((resolve) => setTimeout(resolve, 2000))
+    await createOrderAction.mutateAsync({
+      first_name: customerInfo.firstName,
+      last_name: customerInfo.lastName,
+      address: customerInfo.address,
+      city: customerInfo.city,
+      email: customerInfo.email,
+      phone: customerInfo.phone,
+      secondary_address: customerInfo.secondaryAddress,
+      secondary_phone: customerInfo.secondaryPhone,
+      special_mark: customerInfo.specialMark,
+    }, {
+      onError() {
+        setIsLoading(false)
+      },
 
-    const newOrderCode = generateOrderCode()
-    setOrderCode(newOrderCode)
-    setIsCompleted(true)
-    setIsLoading(false)
+      onSuccess(order) {
+        setIsLoading(false)
+        setOrderCode(order.order_code)
+        setIsCompleted(true)
+      },
+    })
+
+
+    
   }
 
   const copyOrderCode = async () => {
@@ -198,10 +176,10 @@ export default function CheckoutPage() {
                   {cartItems.map((item) => (
                     <div key={item.id} className="flex justify-between items-center">
                       <div>
-                        <span className="font-medium">{item.name}</span>
+                        <span className="font-medium">{item.product.name.en}</span>
                         <span className="text-neutral-mid ml-2">x{item.quantity}</span>
                       </div>
-                      <span className="font-medium">${(item.price * item.quantity).toFixed(2)}</span>
+                      <span className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
                   <div className="border-t border-neutral-mid/20 pt-3">
@@ -398,28 +376,28 @@ export default function CheckoutPage() {
                     <div key={item.id} className="flex items-start gap-4">
                       <div className="w-16 h-16 bg-neutral-light rounded-lg overflow-hidden flex-shrink-0">
                         <Image
-                          src={item.image || "/placeholder.svg"}
-                          alt={item.name}
+                          src={item.product.image || "/placeholder.svg"}
+                          alt={item.product.name.en}
                           width={64}
                           height={64}
                           className="w-full h-full object-contain"
                         />
                       </div>
                       <div className="flex-1 min-w-0">
-                        <h3 className="font-medium text-primary text-sm">{item.name}</h3>
-                        <div className="text-xs text-neutral-mid mt-1">
+                        <h3 className="font-medium text-primary text-sm">{item.product.name.en}</h3>
+                        {/* <div className="text-xs text-neutral-mid mt-1">
                           {item.color && <span>Color: {item.color}</span>}
                           {item.size && <span className="ml-2">Size: {item.size}</span>}
-                        </div>
+                        </div> */}
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-xs text-neutral-mid">Qty: {item.quantity}</span>
                           <div className="text-right">
-                            <span className="font-medium text-primary">${(item.price * item.quantity).toFixed(2)}</span>
-                            {item.originalPrice && (
+                            <span className="font-medium text-primary">${(item.product.price * item.quantity).toFixed(2)}</span>
+                            {/* {item.originalPrice && (
                               <div className="text-xs text-neutral-mid line-through">
                                 ${(item.originalPrice * item.quantity).toFixed(2)}
                               </div>
-                            )}
+                            )} */}
                           </div>
                         </div>
                       </div>

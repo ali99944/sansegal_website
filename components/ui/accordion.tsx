@@ -226,7 +226,7 @@ interface AccordionContentProps {
   isDisabled?: boolean
 }
 
-export function AccordionContent({ children, className, itemValue, isOpen, isDisabled }: AccordionContentProps) {
+export function AccordionContent({ children, className, itemValue, isOpen }: AccordionContentProps) {
   const contentId = useId() // Should match the ID used by AccordionTrigger
 
   return (

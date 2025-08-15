@@ -173,10 +173,10 @@ const CollapsibleItem = React.forwardRef<HTMLDivElement, CollapsibleItemProps>(
       'flex items-center justify-between py-4 px-4 cursor-pointer transition-colors',
       'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-blue-500',
       ...[
-        currentVariant === 'default' && !isActive ? 'bg-gray-50 hover:bg-gray-100' : '',
+        currentVariant === 'default' && !isActive ? 'bg-white ' : '',
         currentVariant === 'default' && isActive ? 'bg-white' : '',
-        currentVariant === 'ghost' ? 'bg-transparent hover:bg-gray-50' : '',
-        currentVariant === 'bordered' && !isActive ? 'bg-gray-50 hover:bg-gray-100' : '',
+        currentVariant === 'ghost' ? 'bg-transparent hover:bg-white' : '',
+        currentVariant === 'bordered' && !isActive ? 'bg-white ' : '',
         currentVariant === 'bordered' && isActive ? 'bg-white': '',
         isDisabled ? 'opacity-50 cursor-not-allowed': '',
       ],

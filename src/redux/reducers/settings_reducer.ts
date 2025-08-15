@@ -1,8 +1,8 @@
-import { Settings } from '@/src/types/settings'
+import { AppSettings } from '@/src/types/settings'
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface SettingsState {
-  settings: Settings | null
+  settings: AppSettings | null
   isLoading: boolean
   error: string | null
 }
@@ -17,7 +17,7 @@ const settingsSlice = createSlice({
   name: 'settings',
   initialState,
   reducers: {
-    setSettings: (state, action: PayloadAction<Settings>) => {
+    setSettings: (state, action: PayloadAction<AppSettings>) => {
       state.settings = action.payload
       state.isLoading = false
       state.error = null

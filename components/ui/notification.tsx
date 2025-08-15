@@ -25,37 +25,37 @@ export default function Notification({ id, message, type }: NotificationProps) {
   }, [id, removeNotification])
 
   const typeConfig = {
-    success: {
-      bg: "bg-gradient-to-r from-green-50 to-emerald-50",
-      border: "border-green-200",
-      icon: <CheckCircle className="w-5 h-5 text-green-600" />,
-      text: "text-green-800",
-      accent: "bg-green-500",
-      shadow: "shadow-green-100",
+    info: {
+      bg: "bg-[#003049]",
+      border: "border-white/0",
+      icon: <CheckCircle className="w-5 h-5 text-white" />,
+      text: "text-white",
+      accent: "bg-white/60",
+      shadow: "shadow-[#003049]/20",
     },
     error: {
-      bg: "bg-gradient-to-r from-red-50 to-rose-50",
-      border: "border-red-200",
-      icon: <AlertCircle className="w-5 h-5 text-red-600" />,
-      text: "text-red-800",
-      accent: "bg-red-500",
+      bg: "bg-destructive",
+      border: "border-white/0",
+      icon: <AlertCircle className="w-5 h-5 text-white" />,
+      text: "text-white",
+      accent: "bg-white/60",
       shadow: "shadow-red-100",
     },
     warning: {
-      bg: "bg-gradient-to-r from-amber-50 to-yellow-50",
-      border: "border-amber-200",
-      icon: <AlertTriangle className="w-5 h-5 text-amber-600" />,
-      text: "text-amber-800",
-      accent: "bg-amber-500",
-      shadow: "shadow-amber-100",
+      bg: "bg-[#f77f00]",
+      border: "border-[#f77f00]",
+      icon: <AlertTriangle className="w-5 h-5 text-white" />,
+      text: "text-white",
+      accent: "bg-white/60", 
+      shadow: "shadow-[#f77f00]/20",
     },
-    info: {
-      bg: "bg-primary/10",
+    success: {
+      bg: "bg-secondary",
       border: "border-primary/60",
-      icon: <Info className="w-5 h-5 text-primary" />,
-      text: "text-primary",
-      accent: "bg-primary/80",
-      shadow: "shadow-primary/10",
+      icon: <Info className="w-5 h-5 !text-white" />,
+      text: "text-white",
+      accent: "bg-white/60",
+      shadow: "shadow-primary/20",
     },
   }
 
@@ -118,12 +118,10 @@ export default function Notification({ id, message, type }: NotificationProps) {
             initial={{ opacity: 0, scale: 0 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.2 }}
-            whileHover={{ scale: 1.1 }}
-            whileTap={{ scale: 0.9 }}
             onClick={() => removeNotification(id)}
             className="flex-shrink-0 p-1 rounded-full hover:bg-white/50 transition-colors duration-200 group cursor-pointer"
           >
-            <X className="w-4 h-4 text-gray-500 group-hover:text-gray-700" />
+            <X className="w-4 h-4 text-white group-hover:text-gray-700" />
           </motion.button>
         </div>
       </div>
