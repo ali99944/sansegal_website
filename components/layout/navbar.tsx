@@ -2,13 +2,13 @@
 
 import { useState } from 'react'
 import Link from 'next/link'
-import { Menu, X, ShoppingBag, Globe, Users2 } from 'lucide-react'
+import { Menu, X, ShoppingBag, Globe } from 'lucide-react'
 import { PromotionalBanner } from './promotional_banner'
 import { Button } from '../ui/button'
 import { useCart } from '@/src/hooks/use-cart'
 import { useLocalization } from '@/src/hooks/use-localization'
 import { AppLocale, TranslatedViewProps } from '@/src/types/i18n'
-import AppConstants from '@/src/constants/app_constants'
+// import AppConstants from '@/src/constants/app_constants'
 
 export function Navbar({ dictionary }: TranslatedViewProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
@@ -110,7 +110,7 @@ export function Navbar({ dictionary }: TranslatedViewProps) {
                 </div>
               </Link>
 
-              <Link
+              {/* <Link
                 href={AppConstants.control_panel_url}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -118,7 +118,7 @@ export function Navbar({ dictionary }: TranslatedViewProps) {
               >
                 <Users2 className="h-5 w-5" />
                 <span className="text-sm">{navDictionary.admin}</span>
-              </Link>
+              </Link> */}
             </div>
           </div>
         </div>
