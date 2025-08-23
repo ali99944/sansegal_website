@@ -13,14 +13,14 @@ const spinnerSizes: Record<NonNullable<SpinnerProps["size"]>, string> = {
   xl: "h-12 w-12 border-4",
 }
 
-export function Spinner({ size = "md", className }: SpinnerProps) {
+export function Spinner({ size = "sm", className }: SpinnerProps) {
   const sizeClasses = spinnerSizes[size]
 
   return (
     <div
       className={cn(
         "inline-block animate-spin rounded-full border-solid border-current border-r-transparent",
-        "text-blue-600", // Base color for the spinner
+        "text-primary", // Base color for the spinner
         sizeClasses,
         className,
       )}

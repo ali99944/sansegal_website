@@ -5,6 +5,17 @@ export interface ProductVariant {
   image: string;
 }
 
+export interface ProductImage {
+  id: number;
+  url: string;
+}
+
+export interface ProductSpecification {
+  id: number;
+  key: string;
+  value: string;
+}
+
 // Interface for the main product data
 export interface Product {
   id: number;
@@ -17,12 +28,13 @@ export interface Product {
     ar: string
   }
   image: string;
+  images: ProductImage[]
   price: number;
   discount?: number;
   discount_type?: "percentage" | "fixed";
   stock: number;
   status: "active" | "draft";
-  specifications: Record<string, string>; // Key-value pairs
+  specifications: ProductSpecification[];
   variants: ProductVariant[];
   created_at: string;
 }

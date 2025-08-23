@@ -1,4 +1,4 @@
-"use client"
+'use client'
 
 import type React from "react"
 import { Provider } from "react-redux"
@@ -16,14 +16,14 @@ export default function AppProvider({ children }: AppProviderProps) {
     return (
         <NotificationProvider>
             <Provider store={store}>
-            <PersistGate loading={<Spinner size="lg"/>} persistor={persistor}>
-                <ReactQueryProvider>
-                    <div>
-                        {children}
-                    </div>
-                </ReactQueryProvider>
-            </PersistGate>
-        </Provider>
+                <PersistGate loading={<Spinner size="lg"/>} persistor={persistor}>
+                    <ReactQueryProvider>
+                        <div>
+                            {children}
+                        </div>
+                    </ReactQueryProvider>
+                </PersistGate>
+            </Provider>
         </NotificationProvider>
     )
 }

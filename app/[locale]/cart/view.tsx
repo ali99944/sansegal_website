@@ -1,45 +1,33 @@
 "use client"
 
-import { useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Minus, Plus, Trash2, ShoppingBag, Gift } from "lucide-react"
+import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react"
 import Link from "next/link"
 import { useCart } from "@/src/hooks/use-cart"
+import { Card } from "@/components/ui/card"
+import { Spinner } from "@/components/ui/spinner"
+import { useSettings } from "@/src/hooks/use-settings"
 
 
 export default function CartPage() {
-  const [promoCode, setPromoCode] = useState("")
-  const [appliedPromo, setAppliedPromo] = useState<{ code: string; discount: number } | null>(null)
-  const { items: cartItems, removeItem, clearCart, updateQuantity } = useCart()  
-
-  const applyPromoCode = () => {
-    // Mock promo code logic
-    if (promoCode.toLowerCase() === "welcome15") {
-      setAppliedPromo({ code: promoCode, discount: 0.15 })
-    } else if (promoCode.toLowerCase() === "save10") {
-      setAppliedPromo({ code: promoCode, discount: 0.1 })
-    } else {
-      alert("Invalid promo code")
-    }
-  }
+  const { items: cartItems, removeItem, clearCart, updateQuantity, loading } = useCart()  
 
   const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+  const { data: settings } = useSettings()
 
-  const promoDiscount = appliedPromo ? subtotal * appliedPromo.discount : 0
-  const shipping = subtotal > 200 ? 0 : 15
+  const shipping = settings?.store.delivery_fee ?? 0
   // const tax = (subtotal - promoDiscount) * 0.08
   const tax = 0
-  const total = subtotal - promoDiscount + shipping + tax
+  const total = subtotal + shipping + tax
 
   if (cartItems.length === 0) {
     return (
       <div className="bg-neutral-light min-h-screen flex justify-center pt-20">
         <section className="section-padding">
           <div className="container-luxury max-w-2xl text-center">
-            <div className="bg-white rounded-lg  p-12">
-              <ShoppingBag className="h-16 w-16 text-neutral-mid mx-auto mb-6" />
+            <div className="bg-white rounded-lg shadow-sm border border-gray-300 p-12">
+              <ShoppingBag className="h-16 w-16 text-black mx-auto mb-6" />
               <h1 className="font-serif text-3xl font-semibold text-primary mb-4">Your Cart is Empty</h1>
               <p className="text-neutral-mid mb-8">
                 Looks like you haven&apos;t added any items to your cart yet. Discover our beautiful collection of
@@ -73,16 +61,22 @@ export default function CartPage() {
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
             {/* Cart Items */}
             <div className="lg:col-span-2">
-              <div className="bg-white rounded-lg  overflow-hidden">
-                <div className="p-4 border-b border-neutral-mid/20">
+              <Card>
+                <div className="border-b border-neutral-mid/20  pb-2">
                   <div className="flex justify-between items-center">
                     <h2 className="font-serif text-xl font-semibold text-primary">Items in Your Cart</h2>
-                    <button
+                    <Button
                       onClick={async () => await clearCart()}
-                      className="p-2 text-destructive cursor-pointer hover:bg-red-50 rounded transition-colors"
+                      className="p-2 text-destructive cursor-pointer bg-transparent hover:bg-red-50 rounded transition-colors"
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                      {
+                        loading ? (
+                          <Spinner />
+                        ) : (
+                          <Trash2 className="h-4 w-4" />
+                        )
+                      }
+                    </Button>
                   </div>
                 </div>
 
@@ -124,14 +118,26 @@ export default function CartPage() {
                               onClick={() => updateQuantity(item.id, item.quantity - 1)}
                               className="p-2 hover:bg-neutral-light transition-colors cursor-pointer"
                             >
-                              <Minus className="h-4 w-4" />
+                              {
+                                loading ? (
+                                  <Spinner />
+                                ) : (
+                                  <Minus className="h-4 w-4" />
+                                )
+                              }
                             </button>
                             <span className="px-4 py-2 font-medium">{item.quantity}</span>
                             <button
                               onClick={() => updateQuantity(item.id, item.quantity + 1)}
                               className="p-2 hover:bg-neutral-light transition-colors cursor-pointer"
                             >
-                              <Plus className="h-4 w-4" />
+                              {
+                                loading ? (
+                                  <Spinner />
+                                ) : (
+                                  <Plus className="h-4 w-4" />
+                                )
+                              }
                             </button>
                           </div>
 
@@ -139,91 +145,60 @@ export default function CartPage() {
                             onClick={() => removeItem(item.id)}
                             className="p-2 text-destructive cursor-pointer hover:bg-red-50 rounded transition-colors"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            {
+                              loading ? (
+                                <Spinner />
+                              ) : (
+                                <Trash2 className="h-4 w-4" />
+                              )
+                            }
                           </button>
                         </div>
                       </div>
                     </div>
                   ))}
                 </div>
-              </div>
+              </Card>
 
             </div>
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-lg  p-6 sticky top-6">
-                <h2 className="font-serif text-xl font-semibold text-primary mb-6">Order Summary</h2>
-
-                {/* Promo Code */}
-                <div className="mb-6">
-                  <div className="flex space-x-2">
-                    <Input
-                      placeholder="Promo code"
-                      value={promoCode}
-                      onChange={(e) => setPromoCode(e.target.value)}
-                      className="flex-1"
-                    />
-                    <Button onClick={applyPromoCode} variant="outline" size={'sm'}>
-                      Apply
-                    </Button>
-                  </div>
-                  {appliedPromo && (
-                    <div className="mt-2 flex items-center text-green-600 text-sm">
-                      <Gift className="h-4 w-4 mr-1" />
-                      {appliedPromo.code} applied ({(appliedPromo.discount * 100).toFixed(0)}% off)
-                    </div>
-                  )}
-                </div>
+              <Card>
+                <h2 className="font-serif text-xl font-semibold text-primary mb-4">Order Summary</h2>
 
                 {/* Price Breakdown */}
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between">
                     <span className="text-neutral-mid">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">{subtotal.toFixed(2)} EGP</span>
                   </div>
 
 
-                  {appliedPromo && (
-                    <div className="flex justify-between text-green-600">
-                      <span>Promo Discount</span>
-                      <span>-${promoDiscount.toFixed(2)}</span>
-                    </div>
-                  )}
 
                   <div className="flex justify-between">
                     <span className="text-neutral-mid">Shipping</span>
-                    <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                    <span className="font-medium">{`${shipping.toFixed(2)} EGP`}</span>
                   </div>
 
-                  <div className="flex justify-between">
-                    <span className="text-neutral-mid">Tax</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
-                  </div>
 
                   <div className="border-t border-neutral-mid/20 pt-3">
                     <div className="flex justify-between">
                       <span className="text-lg font-semibold text-primary">Total</span>
-                      <span className="text-lg font-bold text-primary">${total.toFixed(2)}</span>
+                      <span className="text-lg font-bold text-primary">{total.toFixed(2)} EGP</span>
                     </div>
                   </div>
                 </div>
 
-                {/* Free Shipping Notice */}
-                {shipping > 0 && (
-                  <div className="mb-6 p-3 bg-highlight/10 border border-highlight/30 rounded text-sm">
-                    Add ${(200 - subtotal).toFixed(2)} more for free shipping!
-                  </div>
-                )}
 
                 {/* Checkout Button */}
                 <Link href={'/cart/checkout'}>
-                  <Button size="lg" className="w-full bg-primary hover:bg-primary/90 text-white">
+                  <Button icon={ShoppingBag} size="lg" className="w-full bg-primary hover:bg-primary/90 text-white">
                     Complete your order
                   </Button>
                 </Link>
 
-              </div>
+              </Card>
             </div>
           </div>
         </div>

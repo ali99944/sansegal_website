@@ -39,11 +39,11 @@ export function Footer() {
     { name: 'Facebook', href: settings?.social.facebook_url, icon: Facebook },
     { name: 'Twitter', href: settings?.social.twitter_url, icon: Twitter },
     { name: 'Tiktok', href: settings?.social.tiktok_url, icon: FaTiktok },
-    { name: 'Email', href: 'mailto:hello@sansegal.com', icon: Mail },
+    { name: 'Email', href: `mailto:${settings?.contact.public_email}`, icon: Mail },
   ]
 
   // Skeleton loading animation class
-  const skeletonClass = "animate-pulse bg-gray-700 rounded-md"
+  const skeletonClass = "animate-pulse bg-white/20 rounded-md"
 
   return (
     <footer className="bg-black/95 text-white">

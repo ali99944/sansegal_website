@@ -3,12 +3,14 @@
 import { useState, useEffect } from "react"
 import Image from "next/image"
 import { cn } from "@/lib/utils"
+import { Product } from "@/src/types/product"
 
 interface Model {
   id: string
   name: string
   image: string
   bagName: string
+  product?: Product | null
   isWide?: boolean // true for wide images, false for tall images
 }
 
@@ -50,7 +52,7 @@ function ModelCard({ model, className }: { model: Model; className?: string }) {
     <div
       className={cn(
         "group relative overflow-hidden rounded-lg bg-neutral-light cursor-pointer",
-        "hover:scale-[1.02] transition-all duration-500",
+        " transition-all duration-500",
         className
       )}
     >
@@ -61,7 +63,6 @@ function ModelCard({ model, className }: { model: Model; className?: string }) {
           fill
           className={cn(
             "object-cover transition-all duration-700",
-            "group-hover:scale-110",
             isLoaded ? "opacity-100" : "opacity-0"
           )}
           onLoad={() => setIsLoaded(true)}
@@ -73,13 +74,8 @@ function ModelCard({ model, className }: { model: Model; className?: string }) {
         )}
 
         {/* Overlay */}
-        <div className="absolute inset-0 bg-gradient-to-t from-primary/80 via-primary/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-primary/30 opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-        {/* Content */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 text-white transform translate-y-4 group-hover:translate-y-0 opacity-0 group-hover:opacity-100 transition-all duration-300">
-          <h3 className="font-serif text-lg font-semibold mb-1">{model.name}</h3>
-          <p className="text-sm text-white/90">carrying {model.bagName}</p>
-        </div>
       </div>
     </div>
   )

@@ -10,10 +10,20 @@ export interface OrderItem {
   size?: string
 }
 
+
+export interface OrderTracking {
+  id: number
+  status: OrderStatus
+  location?: string
+  description: string
+  event_date: string
+}
+
 export interface Order {
   id: number
   order_code: string
   status: OrderStatus
+  tracking_history: OrderTracking[];
   customer: {
     first_name: string
     last_name: string
@@ -47,4 +57,6 @@ export type CreateOrderPayload = {
     secondary_address: string | null
     city: string
     special_mark: string | null
+
+    promo_code: string | null
 }

@@ -19,7 +19,7 @@ interface CardProps {
 
 // Card variant styles
 const cardVariants: Record<CardVariant, string> = {
-  default: "bg-white border border-gray-200",
+  default: "bg-white border border-gray-200/80",
   outlined: "bg-white border-2 border-gray-400/60 shadow-none",
   filled: "bg-gray-50 border border-gray-200 shadow-none",
   interactive: "bg-white border border-gray-200 hover:border-black/20 cursor-pointer transition-all duration-200",
@@ -39,7 +39,7 @@ const darkCardVariants: Record<CardVariant, string> = {
 }
 
 export function Card({
-  variant = "elevated",
+  variant = "default",
   className,
   children,
   onClick,

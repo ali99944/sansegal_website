@@ -2,6 +2,7 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Award, Users, Globe, Heart } from 'lucide-react'
 import { Card } from "@/components/ui/card"
+import Link from "next/link"
 
 const values = [
   {
@@ -118,15 +119,19 @@ export default function AboutPage() {
             excellence and your discerning taste.
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
-            <Button size="lg" >
-              Shop Collection
-            </Button>
-            <Button
-              variant="outline"
-              size="lg"
-            >
-              Contact Us
-            </Button>
+            <Link href={'/'}>
+              <Button size="lg" >
+                Shop Collection
+              </Button>
+            </Link>
+            <Link href={'/contact'}>
+              <Button
+                variant="outline"
+                size="lg"
+              >
+                Contact Us
+              </Button>
+            </Link>
           </div>
         </div>
       </Card>

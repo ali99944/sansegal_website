@@ -1,13 +1,19 @@
 "use client"
 
-import { useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { CheckCircle, ShoppingBag, Mail, ArrowLeft, Copy, Check } from "lucide-react"
+import { CheckCircle, ShoppingBag, Mail, ArrowLeft, Copy, Check, Gift } from "lucide-react"
 import { CustomerInfo } from "@/src/types/checkout"
 import { useCart } from "@/src/hooks/use-cart"
 import { useCreateOrder } from "@/src/hooks/use-order"
+import { Card } from "@/components/ui/card"
+import { useSettings } from "@/src/hooks/use-settings"
+import { usePromoCode } from "@/src/hooks/use-promo-code"
+import { PromoCode } from "@/src/types/promo_code"
+import { useNotifications } from "@/src/hooks/use-notification"
+import { getApiError } from "@/lib/error_handler"
 
 
 export default function CheckoutPage() {
@@ -23,8 +29,7 @@ export default function CheckoutPage() {
     specialMark: "",
   })
   
-  const [showCityDropdown, setShowCityDropdown] = useState(false)
-  
+  const [showCityDropdown, setShowCityDropdown] = useState(false)  
   // List of Egyptian cities
   const egyptianCities = [
     "Cairo", "Alexandria", "Giza", "Shubra El Kheima", "Port Said", "Suez", 
@@ -42,17 +47,47 @@ export default function CheckoutPage() {
   const [orderCode, setOrderCode] = useState("")
   const [isLoading, setIsLoading] = useState(false)
   const [copiedOrderCode, setCopiedOrderCode] = useState(false)
+  const [promoCode, setPromoCode] = useState("")
+  const [appliedPromo, setAppliedPromo] = useState<PromoCode | null>(null)
 
   const { items: cartItems } = useCart()  
 
-  const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
-  const shipping = subtotal > 200 ? 0 : 15
-  // const tax = subtotal * 0.08
-  const tax = 0
-  const total = subtotal + shipping + tax
+const subtotal = cartItems.reduce((sum, item) => sum + item.product.price * item.quantity, 0)
+const promoDiscount = useMemo(() => {
+  if (!appliedPromo?.value) return 0
+  
+  if (appliedPromo.type === 'fixed') {
+    return appliedPromo.value
+  } else {
+    return (appliedPromo.value / 100) * subtotal
+  }
+}, [appliedPromo?.type, appliedPromo?.value, subtotal])
+
+const { data: settings } = useSettings()
+const shipping = settings?.store.delivery_fee ?? 0
+const total = subtotal - promoDiscount + shipping
 
   const handleInputChange = (field: keyof CustomerInfo, value: string) => {
     setCustomerInfo((prev) => ({ ...prev, [field]: value }))
+  }
+
+  const redeemCodeAction = usePromoCode()
+  const { notify } = useNotifications()
+
+  const applyPromoCode = async () => {
+    await redeemCodeAction.mutateAsync({
+      code: promoCode
+    }, {
+      onSuccess(data) {
+          setAppliedPromo(data)
+      },
+
+      onError(error) {
+          notify.error(
+            getApiError(error).message
+          )
+      },
+    })
   }
 
   const createOrderAction = useCreateOrder()
@@ -88,6 +123,8 @@ export default function CheckoutPage() {
       secondary_address: customerInfo.secondaryAddress,
       secondary_phone: customerInfo.secondaryPhone,
       special_mark: customerInfo.specialMark,
+
+      promo_code: appliedPromo?.code ?? null
     }, {
       onError() {
         setIsLoading(false)
@@ -182,6 +219,12 @@ export default function CheckoutPage() {
                       <span className="font-medium">${(item.product.price * item.quantity).toFixed(2)}</span>
                     </div>
                   ))}
+                  {appliedPromo && (
+                    <div className="flex justify-between text-green-600">
+                      <span>Promo Discount ({appliedPromo.code})</span>
+                      <span>-{promoDiscount} EGP</span>
+                    </div>
+                  )}
                   <div className="border-t border-neutral-mid/20 pt-3">
                     <div className="flex justify-between font-bold text-primary">
                       <span>Total</span>
@@ -365,6 +408,56 @@ export default function CheckoutPage() {
               </div>
             </div>
 
+            <div className="space-y-8">
+              {/* Promo Code */}
+            <Card className="h-fit">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-bold">
+                  3
+                </div>
+                <h2 className="font-serif text-xl font-semibold text-primary">Promo Code</h2>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex space-x-2">
+                  <Input
+                    placeholder="Enter promo code"
+                    value={promoCode}
+                    onChange={(e) => setPromoCode(e.target.value)}
+                    className="flex-1"
+                  />
+                  {appliedPromo ? (
+                    <Button 
+                      onClick={() => {
+                        setAppliedPromo(null);
+                        setPromoCode('');
+                      }}
+                      variant="destructive"
+                      size={'sm'}
+                      className="!py-4.5 font-semibold"
+                    >
+                      Clear
+                    </Button>
+                  ) : (
+                    <Button 
+                      onClick={applyPromoCode} 
+                      variant="secondary" 
+                      size={'sm'} 
+                      className="!py-4.5 font-semibold"
+                    >
+                      Apply
+                    </Button>
+                  )}
+                </div>
+                {appliedPromo && (
+                  <div className="mt-2 flex items-center text-green-600 text-sm">
+                    <Gift className="h-4 w-4 mr-1" />
+                    {appliedPromo.code} applied ({appliedPromo.type === 'fixed' ? `${appliedPromo.value} EGP` : `${appliedPromo.value}%`} off)
+                  </div>
+                )}
+              </div>
+            </Card>
+
             {/* Order Summary */}
             <div className="lg:sticky lg:top-6 lg:self-start">
               <div className="bg-white rounded-lg p-6">
@@ -392,7 +485,7 @@ export default function CheckoutPage() {
                         <div className="flex items-center justify-between mt-2">
                           <span className="text-xs text-neutral-mid">Qty: {item.quantity}</span>
                           <div className="text-right">
-                            <span className="font-medium text-primary">${(item.product.price * item.quantity).toFixed(2)}</span>
+                            <span className="font-medium text-primary">{(item.product.price * item.quantity).toFixed(2)} EGP</span>
                             {/* {item.originalPrice && (
                               <div className="text-xs text-neutral-mid line-through">
                                 ${(item.originalPrice * item.quantity).toFixed(2)}
@@ -409,20 +502,23 @@ export default function CheckoutPage() {
                 <div className="border-t border-neutral-mid/20 pt-4 space-y-3">
                   <div className="flex justify-between text-sm">
                     <span className="text-neutral-mid">Subtotal</span>
-                    <span className="font-medium">${subtotal.toFixed(2)}</span>
+                    <span className="font-medium">{subtotal.toFixed(2)} EGP</span>
                   </div>
+                  {appliedPromo && (
+                    <div className="flex justify-between text-sm text-green-600">
+                      <span>Promo Discount</span>
+                      <span>-{promoDiscount.toFixed(2)} EGP</span>
+                    </div>
+                  )}
                   <div className="flex justify-between text-sm">
                     <span className="text-neutral-mid">Shipping</span>
-                    <span className="font-medium">{shipping === 0 ? "Free" : `$${shipping.toFixed(2)}`}</span>
+                    <span className="font-medium">{`${shipping.toFixed(2)} EGP`}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-neutral-mid">Tax</span>
-                    <span className="font-medium">${tax.toFixed(2)}</span>
-                  </div>
+
                   <div className="border-t border-neutral-mid/20 pt-3">
                     <div className="flex justify-between">
                       <span className="font-semibold text-primary">Total</span>
-                      <span className="font-bold text-primary text-lg">${total.toFixed(2)}</span>
+                      <span className="font-bold text-primary text-lg">{total.toFixed(2)} EGP</span>
                     </div>
                   </div>
                 </div>
@@ -442,11 +538,12 @@ export default function CheckoutPage() {
                   ) : (
                     <>
                       <ShoppingBag className="h-5 w-5 mr-2" />
-                      Complete Order - ${total.toFixed(2)}
+                      Complete Order - {total.toFixed(2)} EGP
                     </>
                   )}
                 </Button>
               </div>
+            </div>
             </div>
           </div>
         </div>

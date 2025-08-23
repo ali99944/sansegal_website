@@ -12,6 +12,8 @@ import { Card } from "@/components/ui/card"
 import { useContactForm } from "@/src/hooks/use-contact-form"
 import { useNotifications } from "@/src/hooks/use-notification"
 import { getApiError } from "@/lib/error_handler"
+import { useSettings } from "@/src/hooks/use-settings"
+import { FaTiktok } from "react-icons/fa6"
 
 export default function ContactPage() {
   const [formData, setFormData] = useState({
@@ -56,6 +58,10 @@ export default function ContactPage() {
       [e.target.name]: e.target.value,
     }))
   }
+
+  const { data: settings } = useSettings()
+  console.log(settings);
+  
 
   return (
     <div className="min-h-screen bg-neutral-light">
@@ -170,32 +176,32 @@ export default function ContactPage() {
                 <h2 className="font-serif text-2xl font-semibold text-primary mb-6">Connect With Us</h2>
                 
                 <div className="flex flex-wrap justify-center gap-6">
-                  <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
+                  <a href={settings?.social.facebook_url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center cursor-pointer">
                     <div className="bg-blue-600 text-white p-4 rounded-full hover:bg-blue-700 transition-colors">
                       <Facebook className="h-6 w-6" />
                     </div>
                     <span className="mt-2 text-sm font-medium text-primary">Facebook</span>
                   </a>
                   
-                  <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
+                  <a href={settings?.social.instagram_url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center cursor-pointer">
                     <div className="bg-gradient-to-br from-purple-600 to-pink-500 text-white p-4 rounded-full hover:from-purple-700 hover:to-pink-600 transition-colors">
                       <Instagram className="h-6 w-6" />
                     </div>
                     <span className="mt-2 text-sm font-medium text-primary">Instagram</span>
                   </a>
                   
-                  <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
+                  <a href={settings?.social.twitter_url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center cursor-pointer">
                     <div className="bg-blue-400 text-white p-4 rounded-full hover:bg-blue-500 transition-colors">
                       <Twitter className="h-6 w-6" />
                     </div>
                     <span className="mt-2 text-sm font-medium text-primary">Twitter</span>
                   </a>
                   
-                  <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center">
-                    <div className="bg-blue-700 text-white p-4 rounded-full hover:bg-blue-800 transition-colors">
-                      <Linkedin className="h-6 w-6" />
+                  <a href={settings?.social.tiktok_url} target="_blank" rel="noopener noreferrer" className="flex flex-col items-center cursor-pointer">
+                    <div className="bg-gray-800 text-white p-4 rounded-full hover:bg-gray-900 transition-colors">
+                      <FaTiktok className="h-6 w-6" />
                     </div>
-                    <span className="mt-2 text-sm font-medium text-primary">LinkedIn</span>
+                    <span className="mt-2 text-sm font-medium text-primary">TikTok</span>
                   </a>
                 </div>
               </Card>
@@ -215,6 +221,7 @@ export default function ContactPage() {
                     <div>
                       <h3 className="font-semibold text-primary mb-1">Address</h3>
                       <p className="text-neutral-mid">
+                        
                         123 Luxury Avenue
                         <br />
                         Fashion District
@@ -275,16 +282,6 @@ export default function ContactPage() {
                     </p>
                   </div>
 
-                  <div className="grid grid-cols-2 gap-4">
-                    <div className="text-center p-4 bg-neutral-light rounded-lg">
-                      <div className="font-semibold text-primary">Response Time</div>
-                      <div className="text-sm text-neutral-mid">Within 24 hours</div>
-                    </div>
-                    <div className="text-center p-4 bg-neutral-light rounded-lg">
-                      <div className="font-semibold text-primary">Languages</div>
-                      <div className="text-sm text-neutral-mid">English & Arabic</div>
-                    </div>
-                  </div>
                 </div>
               </Card>
 

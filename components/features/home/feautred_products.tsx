@@ -7,6 +7,7 @@ import { useRouter } from "next/navigation"
 import { useProducts } from "@/src/hooks/use-products"
 import { Product } from "@/src/types/product"
 import { useCart } from "@/src/hooks/use-cart"
+import { Button } from "@/components/ui/button"
 
 
 const calculateDiscountAmount = (product: Product) => {
@@ -19,9 +20,11 @@ const calculateDiscountAmount = (product: Product) => {
 }
 
 export function ProductCard({ product }: { product: Product }) {
+  console.log(product);
+  
   const [, setIsHovered] = useState(false)
   const router = useRouter()
-  const { addToCart } = useCart()
+  const { addToCart, loading } = useCart()
 
   const handleAddToCart = async () => {
     await addToCart(product.id, 1)
@@ -49,13 +52,14 @@ export function ProductCard({ product }: { product: Product }) {
         </div>
 
         {/* Wishlist Button */}
-        <button
+        <Button
           onClick={handleAddToCart}
-          className={`flex py-1.5 px-2 cursor-pointer rounded-full transition-all duration-300 bg-white/80 text-primary hover:bg-white `}
+          loading={loading}
+          className={`flex !py-1 !px-2 cursor-pointer rounded-full transition-all duration-300 bg-white/80 text-primary hover:bg-white `}
         >
           <ShoppingBag className={`h-4 w-4`} />
-          <Plus className={`h-4 w-4 cursor-pointer`} />
-        </button>
+          {/* <Plus className={`h-4 w-4 cursor-pointer`} /> */}
+        </Button>
         </div>
       {/* Product Image */}
       <div className="relative aspect-[4/4] overflow-hidden">
@@ -79,12 +83,24 @@ export function ProductCard({ product }: { product: Product }) {
 
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1">
-            <span className="text-lg font-bold text-primary">${product.price}</span>
+            <span className="text-md font-bold text-primary">
+              {
+                product.discount && product.discount != 0 ? (
+                  product.discount_type == 'fixed' ? (
+                    `${product.price - product.discount} EGP`
+                  ) : (
+                    `${product.price - (product.price * (product.discount / 100))} EGP`
+                  )
+                ) : (
+                  `${product.price} EGP`
+                )
+              }
+            </span>
             {/* {product.price && (
               <span className="text-xs text-neutral-mid line-through">${product.price}</span>
             )} */}
           </div>
-          {product.discount && (
+          {product.discount && product.discount != 0 && (
             <span className="text-xs text-red-600 font-semibold">
               {calculateDiscountAmount(product)}
             </span>

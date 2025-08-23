@@ -112,7 +112,7 @@ export function BackgroundAudioPlayer({
         preload="metadata"
       />
 
-      <div className="bg-white/90 backdrop-blur-sm border border-neutral-mid/20 rounded-full shadow-lg p-2 flex items-center space-x-2 space-x-reverse">
+      <div className="bg-white/90 backdrop-blur-sm  rounded-full shadow-sm p-2 flex items-center space-x-2 space-x-reverse">
         {/* Previous Track Button */}
         <Button
           variant="ghost"

@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Search, Package, Truck, CheckCircle, Clock, Mail, Phone } from 'lucide-react'
 import { Collapsible, CollapsibleContent, CollapsibleItem } from "@/components/ui/collabsible"
+import { Card } from "@/components/ui/card"
 
 interface OrderStatus {
   id: string
@@ -131,7 +132,7 @@ export default function TrackOrderPage() {
       {/* Track Order Form */}
       <section className="section-padding max-w-7xl mx-auto">
         <div className="container-luxury max-w-2xl">
-          <div className="bg-white rounded-lg shadow-sm p-8">
+          <Card>
             <h2 className="font-serif text-2xl font-semibold text-primary mb-6">Order Information</h2>
 
             <div className="space-y-6">
@@ -162,7 +163,7 @@ export default function TrackOrderPage() {
                 Track Order
               </Button>
             </div>
-          </div>
+          </Card>
         </div>
       </section>
 

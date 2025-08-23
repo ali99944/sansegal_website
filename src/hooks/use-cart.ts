@@ -55,7 +55,6 @@ export const useCart = () => {
     try {
       const result = await dispatch(updateCartItem({ cartItemId, quantity }))
       if (updateCartItem.fulfilled.match(result)) {
-        addNotification('تم تحديث الكمية بنجاح', 'success')
         return result.payload
       }
     } catch (error) {

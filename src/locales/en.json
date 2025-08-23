@@ -1,0 +1,42 @@
+{
+    "shared": {
+      "navbar": {
+        "navigation": {
+          "about": "About",
+          "contact": "Contact"
+        }
+      },
+
+      "footer": {
+        "links": {
+          "products": "All Products",
+          "about": "About Us",
+          "contact": "Contact",
+          "track_order": "Track Order"
+        },
+
+        "support": {
+          "contact": "Contact Us",
+          "faq": "FAQ"
+        }
+      },
+
+      "common": {
+        
+      }
+    },
+
+    "landing": {
+      "hero": {
+        "title": "Luxury Handmade Bags",
+        "subtitle": "Natural Cow Leather, Made in Egypt 100%",
+        "action_text": "Shop Now"
+      },
+
+      "products": {
+        "title": "Our Products",
+        "discount": "Discount",
+        "new": "New"
+      }
+    }
+}

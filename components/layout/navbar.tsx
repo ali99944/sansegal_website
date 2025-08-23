@@ -6,23 +6,26 @@ import { Menu, X, ShoppingBag, Globe } from 'lucide-react'
 import { PromotionalBanner } from './promotional_banner'
 import { Button } from '../ui/button'
 import { useCart } from '@/src/hooks/use-cart'
+import { useLocalization } from '@/src/hooks/use-localization'
+import { AppLocale } from '@/src/types/i18n'
 
 const navigationItems = [
   { name: 'About', href: '/about' },
   { name: 'Contact', href: '/contact' },
+  { name: 'Track Order', href: '/track-order' },
 ]
 
 export function Navbar() {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  const [language, setLanguage] = useState('en') // 'en' for English, 'ar' for Arabic
   const [isLanguageMenuOpen, setIsLanguageMenuOpen] = useState(false)
   const { items } = useCart()
 
+  const { changeLocale, locale } = useLocalization()
+
 
   const toggleLanguage = (lang: string) => {
-    setLanguage(lang)
+    changeLocale(lang as AppLocale)
     setIsLanguageMenuOpen(false)
-    // Here you would implement actual language switching logic
   }
 
   return (
@@ -78,7 +81,7 @@ export function Navbar() {
                   onClick={() => setIsLanguageMenuOpen(!isLanguageMenuOpen)}
                 >
                   <Globe className="h-5 w-5 mr-1" />
-                  <span className="text-xs font-medium">{language.toUpperCase()}</span>
+                  <span className="text-xs font-medium">{locale.toUpperCase()}</span>
                   {/* {language === 'en' ? 
                     <span className="ml-1 text-xs">🇬🇧</span> : 
                     <span className="ml-1 text-xs">🇪🇬</span>
@@ -90,13 +93,13 @@ export function Navbar() {
                   <div className="absolute right-0 mt-2 w-40 bg-white rounded-md shadow-sm z-50">
                     <div className="py-1">
                       <button
-                        className={`${language === 'en' ? 'bg-neutral-light/50' : ''} cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-primary hover:bg-neutral-light`}
+                        className={`${locale === 'en' ? 'bg-neutral-light/50' : ''} cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-primary hover:bg-neutral-light`}
                         onClick={() => toggleLanguage('en')}
                       >
                         <span className="mr-2">🇬🇧</span> English
                       </button>
                       <button
-                        className={`${language === 'ar' ? 'bg-neutral-light/50' : ''} cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-primary hover:bg-neutral-light`}
+                        className={`${locale === 'ar' ? 'bg-neutral-light/50' : ''} cursor-pointer flex items-center w-full px-4 py-2 text-sm text-left text-primary hover:bg-neutral-light`}
                         onClick={() => toggleLanguage('ar')}
                       >
                         <span className="mr-2">🇪🇬</span> العربية

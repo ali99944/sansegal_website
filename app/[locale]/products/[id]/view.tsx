@@ -5,22 +5,56 @@ import Image from "next/image"
 import { Button } from "@/components/ui/button"
 import { ShoppingBag, Minus, Plus, Share2 } from "lucide-react"
 import { ProductCard } from "@/components/features/home/feautred_products"
-import { useProduct } from "@/src/hooks/use-products"
-import { useParams } from "next/navigation"
-import { Product } from "@/src/types/product"
+import { Product, ProductImage } from "@/src/types/product"
+import { useCart } from "@/src/hooks/use-cart"
 
 
-const relatedProducts: Product[] = []
 
-export default function ProductDetailPage() {
+interface ProductDetailsProps {
+  product: Product
+  related_products: Product[]
+}
+
+export default function ProductDetailPage({ product, related_products }: ProductDetailsProps) {
+  console.log(product);
+
+  
   const [selectedImage, setSelectedImage] = useState(0)
   // const [selectedColor, setSelectedColor] = useState()
   const [quantity, setQuantity] = useState(1)
-  const { id } = useParams()
-  const { data: product, isFetching: is_product_loading } = useProduct(+!id)
+  const galleryImages: ProductImage[] = [
+    {
+      id: 0,
+      url: product.image
+    },
+    ...product.images
+  ]
+  
+  const { addToCart, loading } = useCart()
+  const handleAddToCart = async () => {
+    await addToCart(product.id, quantity)
+  }
 
-  const handleAddToCart = () => {
-
+  const handleShareProduct = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: product.name.en,
+          text: product.description.en,
+          url: window.location.href,
+        });
+      } catch (error) {
+        console.error('Error sharing:', error);
+      }
+    } else {
+      // Fallback for browsers that don't support the Web Share API
+      try {
+        await navigator.clipboard.writeText(window.location.href);
+        alert('Link copied to clipboard!');
+      } catch (error) {
+        console.error('Error copying to clipboard:', error);
+      }
+    }
   }
 
   return (
@@ -34,8 +68,8 @@ export default function ProductDetailPage() {
               {/* Main Image */}
               <div className="aspect-square bg-neutral-light rounded-lg overflow-hidden">
                 <Image
-                  // src={product?.images[selectedImage] || "/placeholder.svg"}
-                  src={''}
+                  src={galleryImages[selectedImage].url || "/placeholder.svg"}
+                  // src={product?.image ?? ''}
                   alt={product?.name.en ?? ''}
                   width={600}
                   height={600}
@@ -44,25 +78,25 @@ export default function ProductDetailPage() {
               </div>
 
               {/* Thumbnail Images */}
-              {/* <div className="grid grid-cols-4 gap-3">
-                {product?.images.map((image, index) => (
+              <div className="flex overflow-x-auto custom-scroll gap-3 pb-2 scrollbar-thin scrollbar-thumb-neutral-mid scrollbar-track-neutral-light">
+                {galleryImages.map((image, index) => (
                   <button
                     key={index}
                     onClick={() => setSelectedImage(index)}
-                    className={`aspect-square bg-neutral-light rounded-lg overflow-hidden border-2 transition-colors ${
+                    className={`flex-none aspect-square w-24 bg-neutral-light rounded-lg overflow-hidden border-2 transition-colors ${
                       selectedImage === index ? "border-primary" : "border-transparent hover:border-neutral-mid"
                     }`}
                   >
                     <Image
-                      src={image || "/placeholder.svg"}
+                      src={image.url || "/placeholder.svg"}
                       alt={`${product?.name} view ${index + 1}`}
-                      width={150}
-                      height={150}
+                      width={120}
+                      height={120}
                       className="w-full h-full object-contain"
                     />
                   </button>
                 ))}
-              </div> */}
+              </div>
             </div>
 
             {/* Product Information */}
@@ -85,7 +119,7 @@ export default function ProductDetailPage() {
 
               {/* Price */}
               <div className="flex items-center gap-4">
-                <span className="text-3xl font-bold text-primary">${product?.price}</span>
+                <span className="text-3xl font-bold text-primary">{product?.price} EGP</span>
               </div>
 
               <div>
@@ -118,13 +152,16 @@ export default function ProductDetailPage() {
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       className="p-3 hover:bg-neutral-mid/20 transition-colors rounded-l-lg"
+                      style={{
+                        cursor: quantity > 1 ? 'pointer' : 'not-allowed'
+                      }}
                     >
                       <Minus className="h-4 w-4" />
                     </button>
-                    <span className="px-4 py-3 font-medium min-w-[3rem] text-center">{quantity}</span>
+                    <span className="px-4 py-2 font-medium min-w-[3rem] text-center">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="p-3 hover:bg-neutral-mid/20 transition-colors rounded-r-lg"
+                      className="p-3 hover:bg-neutral-mid/20 cursor-pointer transition-colors rounded-r-lg"
                     >
                       <Plus className="h-4 w-4" />
                     </button>
@@ -137,11 +174,12 @@ export default function ProductDetailPage() {
                   size="lg"
                   className="flex-1 bg-primary hover:bg-primary/90 text-white"
                   onClick={handleAddToCart}
+                  loading={loading}
                 >
                   <ShoppingBag className="h-5 w-5 mr-2" />
-                  Add to Cart - ${((product?.price ?? 0) * quantity).toFixed(2)}
+                  Add to Cart - {((product?.price ?? 0) * quantity).toFixed(2)} EGP
                 </Button>
-                <Button size="lg" variant="outline" className="px-4 bg-transparent">
+                <Button onClick={handleShareProduct} size="lg" variant="outline" className="px-4 bg-transparent">
                   <Share2 className="h-5 w-5" />
                 </Button>
               </div>
@@ -150,17 +188,17 @@ export default function ProductDetailPage() {
                 {/* Description */}
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-primary mb-4">Description</h3>
-                  <p className="text-neutral-mid text-lg leading-relaxed">{product?.description.en}</p>
+                  <p className="text-neutral-mid text-md leading-relaxed">{product?.description.en}</p>
                 </div>
 
                 {/* Specifications */}
                 <div>
                   <h3 className="font-serif text-xl font-semibold text-primary mb-4">Specifications</h3>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    {Object.entries([]).map(([key, value]) => (
-                      <div key={key} className="flex justify-between py-2 border-b border-neutral-mid/10">
-                        <span className="font-medium text-primary">{key}</span>
-                        <span className="text-neutral-mid">{value}</span>
+                    {product.specifications?.map((spec) => (
+                      <div key={spec.id} className="flex justify-between py-2 border-b border-black">
+                        <span className="font-medium text-primary">{spec.key}</span>
+                        <span className="text-neutral-mid">{spec.value}</span>
                       </div>
                     ))}
                   </div>
@@ -169,20 +207,24 @@ export default function ProductDetailPage() {
             </div>
           </div>
 
-          <div className="mt-20">
-            <div className="text-center mb-12">
-              <h2 className="font-serif text-3xl font-semibold text-primary mb-4 tracking-tight">You May Also Like</h2>
-              <p className="text-neutral-mid text-lg max-w-2xl mx-auto">
-                Discover more handcrafted pieces from our collection
-              </p>
-            </div>
+          {
+            related_products.length != 0 && (
+              <div className="mt-20">
+                <div className="text-center mb-12">
+                  <h2 className="font-serif text-3xl font-semibold text-primary mb-4 tracking-tight">You May Also Like</h2>
+                  <p className="text-neutral-mid text-lg max-w-2xl mx-auto">
+                    Discover more handcrafted pieces from our collection
+                  </p>
+                </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
-              {relatedProducts.map((product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
+                <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-4 gap-6">
+                  {related_products.map((product) => (
+                    <ProductCard key={product.id} product={product} />
+                  ))}
+                </div>
+              </div>
+            )
+          }
         </div>
       </section>
     </div>

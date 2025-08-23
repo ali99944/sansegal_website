@@ -32,7 +32,7 @@ function TestimonialCard({ testimonial }: { testimonial: Testimonial }) {
             {canLinkToProduct ? (
               <Link
                 href={`/products/${testimonial.product.id}`}
-                className="hover:underline transition-colors"
+                className="hover:underline underline transition-colors"
               >
                 {testimonial.product.name}
               </Link>
