@@ -5,34 +5,33 @@ import { Instagram, Facebook, Twitter, Mail } from 'lucide-react'
 import { usePolicies } from '@/src/hooks/use-policy'
 import { useSettings } from '@/src/hooks/use-settings'
 import { FaTiktok } from 'react-icons/fa6'
+import { TranslatedViewProps } from '@/src/types/i18n'
 
-const footerSections = [
-  {
-    title: 'Links',
-    links: [
-      { name: 'All Products', href: '/shop' },
-      { name: 'About Us', href: '/about' },
-      { name: 'Contact Us', href: '/contact' },
-      { name: 'Track Order', href: '/track-order' },
-    ],
-  },
-
-  {
-    title: 'Support',
-    links: [
-      { name: 'Contact Us', href: '/contact' },
-      { name: 'Shipping & Returns', href: '/returns' },
-      { name: 'FAQ', href: '/faq' },
-    ],
-  },
-]
-
-
-
-export function Footer() {
-
+export function Footer({ dictionary }: TranslatedViewProps) {
   const { data: policies, isFetching: is_policies_loading } = usePolicies()
-  const { data:settings, isFetching: is_settings_loading } = useSettings()
+  const { data: settings, isFetching: is_settings_loading } = useSettings()
+  
+  const footerDictionary = dictionary.layout.footer
+
+  const footerSections = [
+    {
+      title: footerDictionary.linksTitle,
+      links: [
+        { name: footerDictionary.allProducts, href: '/shop' },
+        { name: footerDictionary.aboutUs, href: '/about' },
+        { name: footerDictionary.contactUs, href: '/contact' },
+        { name: footerDictionary.trackOrder, href: '/track-order' },
+      ],
+    },
+    {
+      title: footerDictionary.supportTitle,
+      links: [
+        { name: footerDictionary.contactUs, href: '/contact' },
+        { name: footerDictionary.shippingReturns, href: '/returns' },
+        { name: footerDictionary.faq, href: '/faq' },
+      ],
+    },
+  ]
 
   const socialLinks = [
     { name: 'Instagram', href: settings?.social.instagram_url, icon: Instagram },
@@ -42,16 +41,12 @@ export function Footer() {
     { name: 'Email', href: `mailto:${settings?.contact.public_email}`, icon: Mail },
   ]
 
-  // Skeleton loading animation class
   const skeletonClass = "animate-pulse bg-white/20 rounded-md"
 
   return (
     <footer className="bg-black/95 text-white">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-
-        {/* Main Footer Content */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
-          {/* Brand Section */}
           <div className="flex justify-center md:justify-start">
             {is_settings_loading ? (
               <div className={`${skeletonClass} h-52 w-52`}></div>
@@ -73,7 +68,7 @@ export function Footer() {
               </div>
             ) : (
               <p className="text-neutral-mid mb-6 leading-relaxed">
-                Timeless elegance meets handcrafted quality. Each piece tells a story of artisan dedication and premium materials.
+                {footerDictionary.brandDescription}
               </p>
             )}
             <div className="flex space-x-4 mt-6">
@@ -85,22 +80,22 @@ export function Footer() {
                 </>
               ) : (
                 socialLinks.map((social) => (
-                  <Link
-                    key={social.name}
-                    href={social.href ?? ''}
-                    className="text-neutral-mid hover:text-highlight transition-colors duration-200"
-                    aria-label={social.name}
-                  >
-                    <social.icon className="h-5 w-5" />
-                  </Link>
+                  social.href && (
+                    <Link
+                      key={social.name}
+                      href={social.href}
+                      className="text-neutral-mid hover:text-highlight transition-colors duration-200"
+                      aria-label={social.name}
+                    >
+                      <social.icon className="h-5 w-5" />
+                    </Link>
+                  )
                 ))
               )}
             </div>
           </div>
 
-          {/* Footer Links */}
           {is_settings_loading ? (
-            // Skeleton for footer sections
             <>
               {[1, 2].map((section) => (
                 <div key={section} className="space-y-4">
@@ -136,13 +131,12 @@ export function Footer() {
           )}
         </div>
 
-        {/* Bottom Footer */}
         <div className="border-t border-neutral-mid/30 pt-8 flex flex-col md:flex-row justify-between items-center">
           <div className="text-neutral-mid text-sm mb-4 md:mb-0">
             {is_settings_loading ? (
               <div className={`${skeletonClass} h-4 w-64`}></div>
             ) : (
-              settings?.general.copyright_text
+              settings?.general.copyright_text?.replace('{year}', new Date().getFullYear().toString())
             )}
           </div>
           <div className="flex space-x-6 text-sm">
@@ -154,7 +148,7 @@ export function Footer() {
               </>
             ) : (
               policies?.map(policy => (
-                <Link key={policy.id} href="/privacy" className="text-neutral-mid hover:text-white transition-colors">
+                <Link key={policy.id} href={`/policies/${policy.slug}`} className="text-neutral-mid hover:text-white transition-colors">
                   {policy.title}
                 </Link>
               ))

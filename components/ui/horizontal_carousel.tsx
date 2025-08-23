@@ -67,7 +67,7 @@ export function HorizontalCarousel({
     <div className={cn("w-full max-w-7xl mx-auto py-8", className)}>
       <div className="flex items-center justify-between mb-6 px-4 sm:px-0">
         <h2 className="text-2xl font-semibold text-gray-900">{title}</h2>
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-x-2 rtl:flex-row-reverse">
           <button
             className="rounded cursor-pointer  text-white bg-primary hover:bg-primary/80 p-1"
             onClick={() => scroll("left")}

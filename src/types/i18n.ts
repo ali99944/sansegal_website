@@ -1,6 +1,6 @@
 import { Dictionary } from "./dictionary"
 
-export type LocaleParams = {
+export type LocaleProps = {
     params: Promise<{
         locale: AppLocale
     }>

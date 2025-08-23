@@ -6,7 +6,7 @@ import type { LucideIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
 
 const buttonVariants = cva(
-  "inline-flex items-center cursor-pointer justify-center rounded text-sm  transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50",
+  "inline-flex items-center cursor-pointer justify-center rounded text-sm transition-colors focus-visible:outline-none disabled:pointer-events-none disabled:opacity-50 gap-2",
   {
     variants: {
       variant: {
@@ -51,11 +51,11 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
     return (
       <button className={cn(buttonVariants({ variant, size, className }))} ref={ref} disabled={isDisabled} {...props}>
         {loading && (
-          <div className={cn("h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent", children ? "mr-2" : '')} />
+          <div className="h-4 w-4 animate-spin rounded-full border-2 border-current border-t-transparent" />
         )}
-        {Icon && iconPosition === "left" && !loading && <Icon className={cn("h-4 w-4", children ? "mr-2" : '')} />}
+        {Icon && iconPosition === "left" && !loading && <Icon className="h-4 w-4" />}
         {children}
-        {Icon && iconPosition === "right" && !loading && <Icon className={cn("h-4 w-4", children ? "ml-2" : '')} />}
+        {Icon && iconPosition === "right" && !loading && <Icon className="h-4 w-4" />}
       </button>
     )
   },
@@ -63,4 +63,3 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 export { Button, buttonVariants }
-

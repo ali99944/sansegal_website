@@ -1,7 +1,7 @@
 'use client'
 
 import { Testimonials } from "@/components/features/home/testimonials";
-import { FeaturedProducts } from "@/components/features/home/feautred_products";
+import { FeaturedProducts } from "@/components/features/home/products";
 import { HeroSection } from "@/components/features/home/hero";
 import { ModelsBentoGrid } from "@/components/features/home/models_bento_grid";
 import { TranslatedViewProps } from "@/src/types/i18n";
@@ -11,13 +11,14 @@ export default function LandingHome({ dictionary }: TranslatedViewProps) {
   return (
     <div className="">
       <HeroSection
+        dictionary={dictionary.home.hero}
         videoSrc="/assets/videos/video.mp4"
         showScrollIndicator={false}
       />
 
 
-      <FeaturedProducts />
-      <Testimonials />
+      <FeaturedProducts dictionary={dictionary} />
+      <Testimonials dictionary={dictionary} />
       <ModelsBentoGrid 
         models={[
           {

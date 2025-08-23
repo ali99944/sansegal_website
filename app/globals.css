@@ -14,6 +14,26 @@
   --success: #009966
 }
 
+@font-face {
+  font-family: 'almarai';
+  src: url('/fonts/almarai.ttf') format('truetype');
+}
+
+@font-face {
+  font-family: 'din';
+  src: url('/fonts/din.ttf') format('truetype');
+}
+
+.font-almarai {
+  font-family: 'almarai', sans-serif;
+}
+
+.font-din {
+  font-family: 'din', sans-serif;
+}
+
+
+
 @theme inline {
   --color-primary: var(--primary);
   --color-secondary: var(--secondary);

@@ -1,42 +1,241 @@
 {
-    "shared": {
-      "navbar": {
-        "navigation": {
-          "about": "About",
-          "contact": "Contact"
-        }
-      },
+  "home": {
+    "hero": {
+      "title": "Luxury Handmade Bags",
+      "subtitle": "Natural Cow Leather, Made in Egypt 100%",
+      "ctaText": "Shop Now",
+      "scrollText": "Scroll"
+    },
 
-      "footer": {
-        "links": {
-          "products": "All Products",
-          "about": "About Us",
-          "contact": "Contact",
-          "track_order": "Track Order"
-        },
-
-        "support": {
-          "contact": "Contact Us",
-          "faq": "FAQ"
-        }
-      },
-
-      "common": {
-        
+    "products": {
+      "sectionTitle": "Our Products",
+      "card": {
+        "newBadge": "New",
+        "discountBadge": "Discount",
+        "currency": "EGP"
       }
     },
 
-    "landing": {
-      "hero": {
-        "title": "Luxury Handmade Bags",
-        "subtitle": "Natural Cow Leather, Made in Egypt 100%",
-        "action_text": "Shop Now"
-      },
-
-      "products": {
-        "title": "Our Products",
-        "discount": "Discount",
-        "new": "New"
+    "testimonials": {
+      "title": "What Our Customers Say",
+      "card": {
+        "purchased": "Purchased:"
       }
     }
+  },
+
+
+  "layout": {
+    "navbar": {
+      "about": "About",
+      "contact": "Contact",
+      "trackOrder": "Track Order",
+      "faq": "FAQ",
+      "language": "Language",
+      "english": "English",
+      "arabic": "العربية",
+      "shoppingBag": "Shopping bag",
+      "admin": "Admin"
+    },
+    "footer": {
+      "brandDescription": "Timeless elegance meets handcrafted quality. Each piece tells a story of artisan dedication and premium materials.",
+      "linksTitle": "Links",
+      "allProducts": "All Products",
+      "aboutUs": "About Us",
+      "contactUs": "Contact Us",
+      "trackOrder": "Track Order",
+      "supportTitle": "Support",
+      "shippingReturns": "Shipping & Returns",
+      "faq": "FAQ"
+    }
+  },
+
+  "components": {
+    "floatingWhatsApp": {
+      "message": "Hello San Segal, I have a question about your products.",
+      "ariaLabel": "Chat with us on WhatsApp"
+    }
+  },
+
+  "cart": {
+    "title": "Shopping Cart",
+    "itemsCount": "{count} item(s) in your cart",
+    "itemsInCartTitle": "Items in Your Cart",
+    "empty": {
+      "title": "Your Cart is Empty",
+      "description": "Looks like you haven't added any items to your cart yet. Discover our beautiful collection of handcrafted leather goods.",
+      "cta": "Continue Shopping"
+    },
+    "summary": {
+      "title": "Order Summary",
+      "subtotal": "Subtotal",
+      "shipping": "Shipping",
+      "total": "Total",
+      "cta": "Complete your order"
+    },
+    "currency": "EGP"
+  },
+
+  "checkout": {
+      "header": {
+        "backToCart": "Back to Cart",
+        "title": "Complete Your Order"
+      },
+      "form": {
+        "contactInfo": "Contact Information",
+        "firstName": "First Name *",
+        "firstNamePlaceholder": "Enter your first name",
+        "lastName": "Last Name *",
+        "lastNamePlaceholder": "Enter your last name",
+        "email": "Email Address *",
+        "emailPlaceholder": "Enter your email",
+        "phone": "Phone Number *",
+        "phonePlaceholder": "Enter your phone number",
+        "secondaryPhone": "Secondary Phone Number",
+        "secondaryPhonePlaceholder": "Enter secondary phone (optional)",
+        "shippingAddress": "Shipping Address",
+        "streetAddress": "Street Address *",
+        "streetAddressPlaceholder": "Enter your street address",
+        "secondaryStreetAddress": "Secondary Street Address",
+        "secondaryStreetAddressPlaceholder": "Enter additional address details (optional)",
+        "city": "City *",
+        "cityPlaceholder": "Select your city",
+        "specialMark": "Special Mark (Optional)",
+        "specialMarkPlaceholder": "Add special instructions for delivery",
+        "specialMarkHelp": "Add any special marks or instructions to help the delivery person locate you"
+      },
+      "promo": {
+        "title": "Promo Code",
+        "placeholder": "Enter promo code",
+        "apply": "Apply",
+        "clear": "Clear",
+        "applied": "{code} applied ({value} off)"
+      },
+      "summary": {
+        "title": "Your Order",
+        "quantity": "Qty:",
+        "subtotal": "Subtotal",
+        "promoDiscount": "Promo Discount",
+        "shipping": "Shipping",
+        "total": "Total"
+      },
+      "actions": {
+        "completeOrder": "Complete Order - {total} {currency}",
+        "processing": "Processing Order..."
+      },
+      "success": {
+        "title": "Order Confirmed!",
+        "description": "Thank you for your purchase. Your order has been successfully placed and is being processed.",
+        "orderCode": "Your Order Code",
+        "copy": "Copy",
+        "copied": "Copied!",
+        "emailConfirmation": "Order confirmation and tracking details have been sent to your email",
+        "summaryTitle": "Order Summary",
+        "trackYourOrder": "Track Your Order",
+        "continueShopping": "Continue Shopping"
+      },
+      "validation": {
+        "fillRequiredFields": "Please fill in all required fields"
+      },
+      "currency": "EGP"
+    },
+
+    "contact": {
+    "hero": {
+      "title": "Get in Touch",
+      "subtitle": "We'd love to hear from you. Send us a message and we'll respond as soon as possible."
+    },
+    "form": {
+      "title": "Send us a Message",
+      "fullName": "Full Name *",
+      "fullNamePlaceholder": "Your full name",
+      "email": "Email Address *",
+      "emailPlaceholder": "your@email.com",
+      "subject": "Subject *",
+      "subjectPlaceholder": "What is this regarding?",
+      "message": "Message *",
+      "messagePlaceholder": "Tell us how we can help you...",
+      "sendButton": "Send Message",
+      "sendingButton": "Sending..."
+    },
+    "info": {
+      "title": "Visit Our Store",
+      "addressTitle": "Address",
+      "phoneTitle": "Phone",
+      "emailTitle": "Email",
+      "hoursTitle": "Store Hours"
+    },
+    "social": {
+      "title": "Connect With Us",
+      "facebook": "Facebook",
+      "instagram": "Instagram",
+      "twitter": "Twitter",
+      "tiktok": "TikTok"
+    },
+    "service": {
+      "title": "Customer Service",
+      "helpTitle": "Need Help?",
+      "helpDescription": "Our customer service team is here to assist you with any questions about our products, orders, or services."
+    },
+    "successDialog": {
+      "title": "Message Sent Successfully!",
+      "description": "Thank you for reaching out to us. We've received your message and will get back to you within 24 hours.",
+      "closeButton": "Close"
+    }
+  },
+
+  "about": {
+    "hero": {
+      "title": "Our Story",
+      "subtitle": "Crafting timeless elegance through generations of artisan expertise"
+    },
+    "story": {
+      "title": "Sansegal",
+      "paragraph1": "Founded in 2010, Sansegal emerged from a simple yet profound belief: that true luxury lies not in ostentation, but in the quiet confidence of impeccable craftsmanship. Our journey began in a small workshop where master artisans dedicated their lives to perfecting the ancient art of leather working.",
+      "paragraph2": "Today, we continue this tradition, creating bags that are more than accessories—they are companions for life's most important moments. Each piece tells a story of dedication, skill, and an unwavering commitment to excellence.",
+      "paragraph3": "From our workshop to your wardrobe, every Sansegal creation embodies our core values: timeless design, superior materials, and the human touch that makes each piece unique."
+    },
+    "values": [
+      {
+        "title": "Premium Quality",
+        "description": "We source only the finest materials and employ master craftsmen to ensure every piece meets our exacting standards."
+      },
+      {
+        "title": "Artisan Heritage",
+        "description": "Our techniques are passed down through generations, preserving traditional craftsmanship in every stitch."
+      },
+      {
+        "title": "Sustainable Practices",
+        "description": "We're committed to ethical sourcing and environmentally responsible production methods."
+      },
+      {
+        "title": "Customer Dedication",
+        "description": "Your satisfaction is our priority. We build lasting relationships through exceptional service and quality."
+      }
+    ],
+    "cta": {
+      "title": "Experience Sansegal Quality",
+      "description": "Discover the difference that true craftsmanship makes. Each piece is a testament to our commitment to excellence and your discerning taste.",
+      "buttonShop": "Shop Collection",
+      "buttonContact": "Contact Us"
+    }
+  },
+
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Find answers to common questions about our products, shipping, returns, and more. Can't find what you're looking for? Contact our customer service team.",
+    "noFaqsFound": "No FAQs found for the selected category."
+  },
+
+  "product_details": {
+    "quantity": "Quantity",
+    "addToCart": "Add to Cart - {price} {currency}",
+    "description": "Description",
+    "specifications": "Specifications",
+    "relatedProductsTitle": "You May Also Like",
+    "relatedProductsSubtitle": "Discover more handcrafted pieces from our collection",
+    "linkCopied": "Link copied to clipboard!",
+    "currency": "EGP",
+    "altImageView": "view {index}"
+  }
 }

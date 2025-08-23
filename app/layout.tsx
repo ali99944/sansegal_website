@@ -7,6 +7,8 @@ import AppProvider from "@/src/providers/app-provider";
 import { getLocale, getMessages } from 'next-intl/server'
 import { NextIntlClientProvider } from "next-intl";
 import { AppLocale } from "@/src/types/i18n";
+import { getDictionary } from "@/src/i18n/dictionaries";
+import { FloatingWhatsApp } from "@/components/ui/floating_whatsapp";
 
 
 export const metadata: Metadata = {
@@ -24,18 +26,20 @@ export default async function RootLayout({
 
   const direction = (locale as AppLocale) == 'en' ? 'ltr' : 'rtl'
 
+  const dictionary = await getDictionary(locale as AppLocale)
+
   return (
     <html lang={locale} dir={direction}>
       <body
-        className={`antialiased`}
+        className={`antialiased ${direction == 'rtl' ? 'font-almarai' : 'font-din'}`}
       >
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AppProvider>
-            <Navbar />
+            <Navbar dictionary={dictionary} />
             <main className="bg-neutral-light">
               {children}
             </main>
-            <Footer />
+            <Footer dictionary={dictionary} />
             <BackgroundAudioPlayer
               tracks={[
                 {
@@ -55,6 +59,8 @@ export default async function RootLayout({
                 },
               ]}
             />
+
+            <FloatingWhatsApp dictionary={dictionary} />
           </AppProvider>
         </NextIntlClientProvider>
       </body>

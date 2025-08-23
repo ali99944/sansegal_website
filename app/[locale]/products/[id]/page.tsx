@@ -3,9 +3,11 @@ import ProductDetailPage from './view'
 import { Metadata } from 'next'
 import axiosHttp from '@/lib/axios_client'
 import { Product } from '@/src/types/product'
+import { AppLocale } from '@/src/types/i18n'
+import { getDictionary } from '@/src/i18n/dictionaries'
 
 type Props = {
-  params: Promise<{ id: string }>
+  params: Promise<{ id: string, locale: AppLocale }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -50,7 +52,9 @@ export default async function Page({ params }: Props) {
   const related_product_response = await axiosHttp.get(`products/${product.id}/related`)
   const related_products = related_product_response.data
 
+  const dictionary = await getDictionary((await params).locale)
+
   return (
-    <ProductDetailPage product={product} related_products={related_products} />
+    <ProductDetailPage dictionary={dictionary} product={product} related_products={related_products} />
   )
 }
