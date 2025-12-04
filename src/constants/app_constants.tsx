@@ -5,8 +5,8 @@ const AppConstants = Object.freeze({
     // control_panel_url: 'http://localhost:5173/login'
 
 
-    api_url: 'https://sansegal-api.shopaiklopaik.com/public/api',
-    storage_url: 'https://sansegal-api.shopaiklopaik.com/public',
+    api_url: 'https://sapi.shopaiklopaik.com/api',
+    storage_url: 'https://sapi.shopaiklopaik.com/storage',
     store_url: 'https://sansegal.shop',
     // control_panel_url: 'http://localhost:5173/login'
 })
